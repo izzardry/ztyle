@@ -10,7 +10,7 @@ Zudoku is the reference implementation: when this guide is silent, do what Zudok
   <img src="assets/screenshots/05-radial-commit.png" width="220" alt="Zudoku radial number dial" />
 </p>
 
-**→ Open [`index.html`](index.html)**: a single static page that teaches the whole style step by step, with live demos (stage transition, radial dial, long-press ladder, synced pulses, undo toasts) built from the real tokens. The markdown chapters below are the detailed reference.
+**→ Live: [izzardry.github.io/ztyle](https://izzardry.github.io/ztyle/)** (source: [`index.html`](index.html)): a single static page that teaches the whole style step by step, with live demos (stage transition, radial dial, long-press ladder, synced pulses, undo toasts) built from the real tokens. The markdown chapters below are the detailed reference.
 
 ## The idea in one line
 
