@@ -1,0 +1,401 @@
+{
+  "$schema-note": "Ztyle design tokens for izzardry games. Source of truth for non-web targets; mirrors tokens/ztyle.css.",
+  "color": {
+    "light": {
+      "background": {
+        "hsl": "0 0% 98%",
+        "hex": "#fafafa"
+      },
+      "foreground": {
+        "hsl": "0 0% 5%",
+        "hex": "#0d0d0d"
+      },
+      "card": {
+        "hsl": "0 0% 100%",
+        "hex": "#ffffff"
+      },
+      "card-foreground": {
+        "hsl": "0 0% 5%",
+        "hex": "#0d0d0d"
+      },
+      "popover": {
+        "hsl": "0 0% 100%",
+        "hex": "#ffffff"
+      },
+      "popover-foreground": {
+        "hsl": "0 0% 5%",
+        "hex": "#0d0d0d"
+      },
+      "primary": {
+        "hsl": "0 0% 5%",
+        "hex": "#0d0d0d"
+      },
+      "primary-foreground": {
+        "hsl": "0 0% 98%",
+        "hex": "#fafafa"
+      },
+      "secondary": {
+        "hsl": "0 0% 92%",
+        "hex": "#ebebeb"
+      },
+      "secondary-foreground": {
+        "hsl": "0 0% 15%",
+        "hex": "#262626"
+      },
+      "muted": {
+        "hsl": "0 0% 96%",
+        "hex": "#f5f5f5"
+      },
+      "muted-foreground": {
+        "hsl": "0 0% 45%",
+        "hex": "#737373"
+      },
+      "accent": {
+        "hsl": "0 0% 90%",
+        "hex": "#e6e6e6"
+      },
+      "accent-foreground": {
+        "hsl": "0 0% 10%",
+        "hex": "#1a1a1a"
+      },
+      "destructive": {
+        "hsl": "0 72% 51%",
+        "hex": "#dc2828"
+      },
+      "destructive-foreground": {
+        "hsl": "0 0% 98%",
+        "hex": "#fafafa"
+      },
+      "success": {
+        "hsl": "142 76% 36%",
+        "hex": "#16a249"
+      },
+      "success-foreground": {
+        "hsl": "0 0% 98%",
+        "hex": "#fafafa"
+      },
+      "border": {
+        "hsl": "0 0% 85%",
+        "hex": "#d9d9d9"
+      },
+      "input": {
+        "hsl": "0 0% 85%",
+        "hex": "#d9d9d9"
+      },
+      "ring": {
+        "hsl": "0 0% 5%",
+        "hex": "#0d0d0d"
+      }
+    },
+    "dark": {
+      "background": {
+        "hsl": "0 0% 5%",
+        "hex": "#0d0d0d"
+      },
+      "foreground": {
+        "hsl": "0 0% 95%",
+        "hex": "#f2f2f2"
+      },
+      "card": {
+        "hsl": "0 0% 8%",
+        "hex": "#141414"
+      },
+      "card-foreground": {
+        "hsl": "0 0% 95%",
+        "hex": "#f2f2f2"
+      },
+      "popover": {
+        "hsl": "0 0% 8%",
+        "hex": "#141414"
+      },
+      "popover-foreground": {
+        "hsl": "0 0% 95%",
+        "hex": "#f2f2f2"
+      },
+      "primary": {
+        "hsl": "0 0% 95%",
+        "hex": "#f2f2f2"
+      },
+      "primary-foreground": {
+        "hsl": "0 0% 5%",
+        "hex": "#0d0d0d"
+      },
+      "secondary": {
+        "hsl": "0 0% 15%",
+        "hex": "#262626"
+      },
+      "secondary-foreground": {
+        "hsl": "0 0% 90%",
+        "hex": "#e6e6e6"
+      },
+      "muted": {
+        "hsl": "0 0% 12%",
+        "hex": "#1f1f1f"
+      },
+      "muted-foreground": {
+        "hsl": "0 0% 55%",
+        "hex": "#8c8c8c"
+      },
+      "accent": {
+        "hsl": "0 0% 18%",
+        "hex": "#2e2e2e"
+      },
+      "accent-foreground": {
+        "hsl": "0 0% 95%",
+        "hex": "#f2f2f2"
+      },
+      "destructive": {
+        "hsl": "0 62% 50%",
+        "hex": "#cf3030"
+      },
+      "destructive-foreground": {
+        "hsl": "0 0% 98%",
+        "hex": "#fafafa"
+      },
+      "success": {
+        "hsl": "142 70% 45%",
+        "hex": "#22c35d"
+      },
+      "success-foreground": {
+        "hsl": "0 0% 98%",
+        "hex": "#fafafa"
+      },
+      "border": {
+        "hsl": "0 0% 20%",
+        "hex": "#333333"
+      },
+      "input": {
+        "hsl": "0 0% 20%",
+        "hex": "#333333"
+      },
+      "ring": {
+        "hsl": "0 0% 80%",
+        "hex": "#cccccc"
+      }
+    }
+  },
+  "alpha": {
+    "foreground": {
+      "halftone": 0.03,
+      "related": 0.05,
+      "halftoneDense": 0.06,
+      "selectedFill": 0.1,
+      "boardFrame": 0.1,
+      "ghostBorder": 0.2,
+      "groupDivider": 0.3,
+      "hoverBorder": 0.3,
+      "note": 0.5,
+      "selectionRing": 0.5,
+      "iconRest": 0.7
+    },
+    "mutedForeground": {
+      "subLabel": 0.7,
+      "dismiss": 0.6,
+      "hint": 0.5,
+      "disabledToggle": 0.4,
+      "versionStamp": 0.3
+    },
+    "surface": {
+      "chrome": 0.8,
+      "fabLarge": 0.9,
+      "bubble": 0.95,
+      "stickyHeader": 0.95,
+      "scrim": 0.8,
+      "scrimSoft": 0.6
+    },
+    "semantic": {
+      "groupDone": 0.05,
+      "errorFill": 0.15,
+      "errorRing": 0.4,
+      "pageTint": 0.12
+    }
+  },
+  "font": {
+    "family": [
+      "Fira Code",
+      "JetBrains Mono",
+      "SF Mono",
+      "ui-monospace",
+      "Menlo",
+      "Consolas",
+      "monospace"
+    ],
+    "ligatures": false,
+    "numeric": "tabular-nums",
+    "weight": {
+      "light": 300,
+      "normal": 400,
+      "medium": 500,
+      "semibold": 600,
+      "bold": 700
+    },
+    "tracking": {
+      "mark": "0.3em",
+      "widest": "0.1em",
+      "wider": "0.05em",
+      "wide": "0.025em"
+    },
+    "roles": {
+      "wordmark": {
+        "size": [
+          30,
+          36
+        ],
+        "weight": 300,
+        "tracking": "mark",
+        "case": "upper"
+      },
+      "codeDisplay": {
+        "size": [
+          24,
+          30,
+          36
+        ],
+        "weight": 300,
+        "tracking": "widest",
+        "case": "upper"
+      },
+      "celebration": {
+        "size": 24,
+        "weight": 700
+      },
+      "boardDigit": {
+        "size": [
+          16,
+          18,
+          20,
+          24
+        ],
+        "givenWeight": 700,
+        "playerWeight": 400,
+        "playerOpacity": 0.8
+      },
+      "selectorValue": {
+        "size": 18,
+        "weight": 500
+      },
+      "body": {
+        "size": 14
+      },
+      "button": {
+        "size": 14,
+        "case": "upper",
+        "tracking": "wider"
+      },
+      "overline": {
+        "size": 14,
+        "case": "upper",
+        "tracking": "wider",
+        "color": "muted-foreground"
+      },
+      "meta": {
+        "size": 12,
+        "color": "muted-foreground"
+      },
+      "eyebrow": {
+        "size": 10,
+        "case": "upper",
+        "tracking": "wider",
+        "color": "muted-foreground"
+      },
+      "micro": {
+        "size": [
+          9,
+          10
+        ],
+        "color": "muted-foreground/0.3"
+      },
+      "note": {
+        "size": 8,
+        "color": "foreground/0.5"
+      }
+    }
+  },
+  "radius": {
+    "base": 8,
+    "sm": 4,
+    "md": 6,
+    "lg": 8,
+    "xl": 12,
+    "2xl": 16,
+    "full": 9999
+  },
+  "shadow": {
+    "sm": "0 1px 2px 0 rgb(0 0 0 / 0.05)",
+    "md": "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
+    "lg": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
+    "xl": "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)"
+  },
+  "blur": {
+    "chrome": 4,
+    "scrimSoft": 2,
+    "preview": 8
+  },
+  "motion": {
+    "easing": "cubic-bezier(0, 0, 0.2, 1)",
+    "duration": {
+      "instant": 100,
+      "fast": 150,
+      "base": 200,
+      "chrome": 300,
+      "screen": 500,
+      "pulse": 800,
+      "ambient": 1000,
+      "errorCycle": 2000,
+      "stagger": 100,
+      "toastLifetime": 5000,
+      "updateToastLifetime": 15000
+    }
+  },
+  "gesture": {
+    "longPress": {
+      "dial": 300,
+      "options": 500,
+      "peek": 1000,
+      "easterEgg": 3000
+    },
+    "swipe": {
+      "directionLock": 8,
+      "deleteThreshold": 0.4
+    },
+    "dial": {
+      "radius": 60,
+      "commitRadius": 105,
+      "itemSize": 40,
+      "clearRadius": 25,
+      "aimDistance": 40,
+      "commitDistance": 55,
+      "viewportMargin": 80,
+      "hoverScale": 1.6
+    }
+  },
+  "layout": {
+    "cellSize": "clamp(28px, min(8vw, 8vh), 52px)",
+    "contentMaxWidth": 448,
+    "toastWidth": "min(90vw, 360px)",
+    "bubbleMaxWidth": 200,
+    "mobileBreakpoint": 768,
+    "inset": {
+      "top": "max(1.5rem, safe-top)",
+      "side": "max(1rem, safe-side)",
+      "bottom": "max(1rem, safe-bottom)"
+    }
+  },
+  "zIndex": {
+    "stage": 10,
+    "startUi": 20,
+    "sticky": 30,
+    "chrome": 40,
+    "overlay": 50,
+    "tutorial": 100
+  },
+  "code": {
+    "alphabet": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+    "generatedLength": 6,
+    "maxLength": 8
+  },
+  "difficulty": {
+    "levels": 12,
+    "default": 5
+  }
+}

@@ -1,0 +1,1596 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Ztyle</title>
+<meta name="description" content="Ztyle — the izzardry style guide. Zero Distractions. Just Games." />
+<meta name="author" content="izzardry" />
+<meta name="theme-color" content="#fafafa" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#0d0d0d" media="(prefers-color-scheme: dark)" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap" />
+<link rel="stylesheet" href="tokens/ztyle.css" />
+<script>
+  // Theme: follow system unless the reader picked one (guide-only convenience).
+  (function () {
+    var pref = 'auto';
+    try { pref = localStorage.getItem('ztyle:theme') || 'auto'; } catch (e) {}
+    var dark = pref === 'dark' || (pref === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    document.documentElement.classList.toggle('dark', dark);
+    document.documentElement.dataset.themePref = pref;
+  })();
+</script>
+<style>
+  /* ---------- Guide layout (page-specific; components come from ztyle.css) ---------- */
+  html { scroll-behavior: smooth; }
+  body { margin: 0; overflow-x: hidden; }
+  a { color: inherit; }
+  ::selection { background: hsl(var(--foreground) / .15); }
+
+  .topbar {
+    position: fixed; inset: 0 0 auto 0; z-index: 30; height: 56px;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 0 max(16px, env(safe-area-inset-right)) 0 max(16px, env(safe-area-inset-left));
+    background: hsl(var(--background) / .95); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+    border-bottom: 1px solid hsl(var(--border));
+    transition: transform var(--dur-chrome) var(--ease), opacity var(--dur-chrome) var(--ease);
+  }
+  .topbar.is-away { transform: translateY(-100%); opacity: 0; pointer-events: none; }
+  .topbar .mark { font-weight: 300; letter-spacing: var(--tracking-mark); font-size: 1rem; text-decoration: none; }
+  .topbar .mark small { letter-spacing: var(--tracking-wider); font-size: 10px; color: hsl(var(--muted-foreground)); margin-left: .5rem; }
+  .topbar-actions { display: flex; align-items: center; gap: 4px; }
+  @media (min-width: 1080px) { #menuBtn { display: none; } }
+  .theme-label { font-size: 10px; text-transform: uppercase; letter-spacing: var(--tracking-wider); color: hsl(var(--muted-foreground)); min-width: 3.5em; }
+
+  .layout { display: grid; grid-template-columns: minmax(0, 1fr); max-width: 1180px; margin: 0 auto; padding: 0 16px; }
+  @media (min-width: 1080px) { .layout { grid-template-columns: 210px minmax(0, 1fr); gap: 56px; padding: 0 32px; } }
+  .toc { display: none; }
+  @media (min-width: 1080px) {
+    .toc { display: block; position: sticky; top: 56px; align-self: start; max-height: calc(100vh - 56px); overflow: auto; padding: 32px 0 48px; }
+  }
+  .toc a { display: block; padding: 4px 8px; border-radius: 6px; color: hsl(var(--muted-foreground)); text-decoration: none; font-size: 12px; line-height: 1.4; transition: all var(--dur-fast) var(--ease); }
+  .toc a:hover { color: hsl(var(--foreground)); }
+  .toc a.active { color: hsl(var(--foreground)); background: hsl(var(--foreground) / .06); }
+  .toc a .n { color: hsl(var(--muted-foreground) / .6); margin-right: 6px; }
+  .toc .part { margin: 20px 8px 6px; }
+  main { min-width: 0; max-width: 780px; padding-bottom: 96px; }
+
+  /* Sheet (mobile contents) — the izzardry full-screen list pattern */
+  .sheet { position: fixed; inset: 0; z-index: 50; background: hsl(var(--background)); overflow: auto; }
+  .sheet[hidden] { display: none; }
+  .sheet-head { position: sticky; top: 0; display: flex; align-items: center; gap: 16px; padding: 12px 16px; background: hsl(var(--background) / .95); backdrop-filter: blur(4px); border-bottom: 1px solid hsl(var(--border)); }
+  .sheet-head h2 { margin: 0; font-size: 1.125rem; font-weight: 400; text-transform: uppercase; letter-spacing: var(--tracking-wider); }
+  .sheet nav { max-width: 448px; margin: 0 auto; padding: 16px; }
+  .sheet nav a { display: block; padding: 10px 4px; text-decoration: none; border-bottom: 1px solid hsl(var(--border) / .6); font-size: 14px; }
+  .sheet nav .part { margin: 20px 4px 4px; }
+  .sheet nav a .n { color: hsl(var(--muted-foreground)); margin-right: 8px; }
+
+  /* Typography of the guide itself */
+  section { padding: 88px 0 8px; scroll-margin-top: 40px; }
+  .part-head { padding: 120px 0 0; scroll-margin-top: 40px; }
+  .part-head .eyebrow { display: block; margin-bottom: 8px; }
+  .part-head h2 { font-size: 1.875rem; font-weight: 300; letter-spacing: var(--tracking-widest); text-transform: uppercase; margin: 0; }
+  .part-head p { max-width: 560px; }
+  h2.sec { font-size: 1.5rem; font-weight: 400; margin: 0 0 4px; letter-spacing: .01em; }
+  h2.sec .n { color: hsl(var(--muted-foreground) / .6); font-weight: 300; margin-right: .5em; }
+  h3 { font-size: .875rem; font-weight: 500; text-transform: uppercase; letter-spacing: var(--tracking-wider); margin: 40px 0 12px; }
+  h4 { font-size: .875rem; font-weight: 500; margin: 24px 0 8px; }
+  p, li { font-size: 14px; line-height: 1.75; color: hsl(var(--foreground) / .85); }
+  p { margin: 12px 0; }
+  ul, ol { padding-left: 1.25rem; }
+  .lede { font-size: 15px; color: hsl(var(--muted-foreground)); margin-top: 4px; }
+  code { font-family: inherit; font-size: .88em; background: hsl(var(--foreground) / .06); padding: 1px 5px; border-radius: 4px; }
+  pre { background: hsl(var(--card)); border: 1px solid hsl(var(--border)); border-radius: var(--radius); padding: 16px; overflow-x: auto; font-size: 12px; line-height: 1.65; margin: 16px 0; }
+  pre code { background: none; padding: 0; font-size: inherit; }
+  kbd { font-family: inherit; font-size: 11px; border: 1px solid hsl(var(--border)); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; background: hsl(var(--card)); }
+  hr { border: 0; border-top: 1px solid hsl(var(--border)); margin: 48px 0; }
+  .muted { color: hsl(var(--muted-foreground)); }
+
+  /* Didactic blocks */
+  .rule { margin: 20px 0; padding: 4px 0 4px 18px; border-left: 2px solid hsl(var(--foreground)); }
+  .rule .eyebrow { display: block; margin-bottom: 4px; }
+  .rule p { font-size: 17px; line-height: 1.55; font-weight: 500; margin: 0; color: hsl(var(--foreground)); }
+  .why { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; align-items: baseline; margin: 16px 0; }
+  .why .eyebrow { padding-top: 4px; }
+  .why p { margin: 0; }
+  .dd { display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr); margin: 20px 0; }
+  @media (min-width: 640px) { .dd { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+  .dd > div { border: 1px solid hsl(var(--border)); border-radius: .75rem; padding: 14px 16px; background: hsl(var(--card)); }
+  .dd .eyebrow { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+  .dd .do .eyebrow { color: hsl(var(--success)); }
+  .dd .dont .eyebrow { color: hsl(var(--destructive)); }
+  .dd p, .dd li { font-size: 13px; margin: 0; }
+  .dd ul { margin: 0; }
+  .demo { position: relative; margin: 20px 0; border: 1px solid hsl(var(--border)); border-radius: 1rem; background: hsl(var(--background)); padding: 44px 20px 20px; }
+  .demo > .demo-label { position: absolute; top: 14px; left: 18px; display: flex; align-items: center; gap: 6px; }
+  .demo > .demo-label::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: hsl(var(--foreground)); }
+  .demo-caption { font-size: 12px; color: hsl(var(--muted-foreground)); margin: 14px 0 0; line-height: 1.6; }
+  .demo-controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 16px; }
+  .seg { display: inline-flex; border: 1px solid hsl(var(--foreground) / .2); border-radius: 9999px; padding: 2px; }
+  .seg button { font: inherit; font-size: 11px; text-transform: uppercase; letter-spacing: var(--tracking-wider); border: 0; background: transparent; color: hsl(var(--muted-foreground)); padding: 5px 12px; border-radius: 9999px; cursor: pointer; transition: all var(--dur-fast) var(--ease); }
+  .seg button[aria-pressed="true"] { background: hsl(var(--foreground)); color: hsl(var(--background)); }
+
+  .tbl-wrap { overflow-x: auto; margin: 16px 0; border: 1px solid hsl(var(--border)); border-radius: var(--radius); background: hsl(var(--card)); }
+  table.tbl { width: 100%; border-collapse: collapse; font-size: 12px; line-height: 1.5; }
+  .tbl th { text-align: left; font-weight: 400; font-size: 10px; text-transform: uppercase; letter-spacing: var(--tracking-wider); color: hsl(var(--muted-foreground)); padding: 10px 12px; border-bottom: 1px solid hsl(var(--border)); white-space: nowrap; }
+  .tbl td { padding: 9px 12px; border-bottom: 1px solid hsl(var(--border) / .6); vertical-align: top; }
+  .tbl tr:last-child td { border-bottom: 0; }
+  .tbl td code { white-space: nowrap; }
+
+  .grid-2 { display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr); }
+  @media (min-width: 640px) { .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .grid-3 { display: grid; gap: 12px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  @media (min-width: 640px) { .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  .center { display: flex; align-items: center; justify-content: center; }
+  .row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+  .stack { display: flex; flex-direction: column; gap: 8px; }
+
+  /* Hero — mirrors the izzardry start screen */
+  .hero { position: relative; min-height: min(100vh, 900px); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 96px 0 72px; }
+  .hero .hero-board { position: absolute; inset: 0; margin: auto; width: fit-content; height: fit-content; --cell-size: clamp(26px, 6.2vw, 44px); }
+  .hero .hero-board .cell { font-size: calc(var(--cell-size) * .45); }
+  .hero-top { position: relative; z-index: 2; margin-bottom: auto; }
+  .hero-top .wordmark { font-size: clamp(2.25rem, 8vw, 3.75rem); line-height: 1.1; margin: 0; padding-left: .3em; }
+  .hero-top .tagline { margin: 10px 0 0; font-size: 15px; }
+  .hero-center { position: relative; z-index: 2; margin: 32px 0; }
+  .hero-bottom { position: relative; z-index: 2; margin-top: auto; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .bounce { display: inline-block; animation: z-bounce 1s infinite; color: hsl(var(--muted-foreground) / .5); }
+  @keyframes z-bounce { 0%, 100% { transform: translateY(-25%); animation-timing-function: cubic-bezier(.8,0,1,1); } 50% { transform: none; animation-timing-function: cubic-bezier(0,0,.2,1); } }
+
+  .shots { display: flex; gap: 12px; overflow-x: auto; padding: 4px 2px 12px; scroll-snap-type: x mandatory; }
+  .shots figure { margin: 0; flex: 0 0 auto; scroll-snap-align: start; }
+  .shots img { display: block; height: 340px; width: auto; border-radius: 12px; border: 1px solid hsl(var(--border)); box-shadow: var(--shadow-md); background: hsl(var(--card)); }
+  .shots img.wide { height: 340px; }
+  .shots figcaption { font-size: 10px; text-transform: uppercase; letter-spacing: var(--tracking-wider); color: hsl(var(--muted-foreground)); margin-top: 8px; }
+  @media (max-width: 640px) { .shots img, .shots img.wide { height: 260px; } }
+
+  .rules { list-style: none; padding: 0; margin: 20px 0; display: grid; gap: 10px; grid-template-columns: minmax(0, 1fr); counter-reset: r; }
+  @media (min-width: 640px) { .rules { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .rules li { counter-increment: r; border: 1px solid hsl(var(--border)); border-radius: var(--radius); background: hsl(var(--card)); padding: 14px 16px 14px 52px; position: relative; font-size: 13px; line-height: 1.6; transition: all var(--dur-base) var(--ease); }
+  .rules li:hover { border-color: hsl(var(--foreground) / .3); box-shadow: var(--shadow-sm); }
+  .rules li::before { content: counter(r, decimal-leading-zero); position: absolute; left: 16px; top: 14px; font-weight: 300; color: hsl(var(--muted-foreground)); letter-spacing: .05em; }
+  .rules li b { display: block; font-weight: 600; margin-bottom: 2px; }
+  .rules li a { text-decoration: none; }
+
+  /* Color */
+  .scheme-pair { display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr); }
+  @media (min-width: 720px) { .scheme-pair { grid-template-columns: 1fr 1fr; } }
+  .scheme { background: hsl(var(--background)); color: hsl(var(--foreground)); border: 1px solid hsl(var(--border)); border-radius: 1rem; padding: 16px; }
+  .scheme > .eyebrow { display: block; margin-bottom: 12px; }
+  .swatch { display: grid; grid-template-columns: 36px 1fr auto; gap: 10px; align-items: center; padding: 6px 0; border-bottom: 1px solid hsl(var(--border) / .5); }
+  .swatch:last-child { border-bottom: 0; }
+  .swatch .chip { width: 36px; height: 36px; border-radius: 8px; border: 1px solid hsl(var(--foreground) / .12); }
+  .swatch .name { font-size: 12px; }
+  .swatch .name span { display: block; font-size: 10px; color: hsl(var(--muted-foreground)); }
+  .swatch .val { font-size: 10px; color: hsl(var(--muted-foreground)); text-align: right; }
+  .ladder { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 8px; }
+  .ladder div { border-radius: 8px; height: 64px; border: 1px solid hsl(var(--border)); display: flex; flex-direction: column; justify-content: flex-end; padding: 6px; font-size: 10px; background: hsl(var(--background)); position: relative; overflow: hidden; }
+  .ladder div i { position: absolute; inset: 0; }
+  .ladder div b, .ladder div span { position: relative; }
+  .ladder div b { font-weight: 600; }
+  .ladder div span { color: hsl(var(--muted-foreground)); }
+
+  /* Type specimens */
+  .spec { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px 20px; padding: 16px 0; border-bottom: 1px solid hsl(var(--border) / .6); align-items: baseline; }
+  @media (min-width: 640px) { .spec { grid-template-columns: 150px minmax(0, 1fr); } }
+  .spec .meta { font-size: 11px; line-height: 1.5; }
+  .spec .meta b { display: block; color: hsl(var(--foreground)); font-weight: 500; font-size: 12px; }
+  .weights { display: flex; flex-wrap: wrap; gap: 16px 28px; align-items: baseline; }
+  .weights div { text-align: center; }
+  .weights .big { font-size: 34px; line-height: 1.2; }
+
+  /* Surfaces */
+  .elev-stage { position: relative; height: 300px; border-radius: 12px; overflow: hidden; border: 1px solid hsl(var(--border)); }
+  .elev-stage .board { position: absolute; inset: 0; margin: auto; width: fit-content; height: fit-content; --cell-size: 30px; }
+  .elev-stage .board .cell { font-size: 13px; }
+  .elev-stage .glass.chrome-bar { position: absolute; left: 0; right: 0; bottom: 16px; margin: 0 auto; width: fit-content; }
+  .elev-stage .bubble { position: absolute; top: 18px; right: 18px; }
+  .elev-stage .flat-card { position: absolute; top: 18px; left: 18px; padding: 10px 12px; font-size: 12px; }
+  .radii { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; }
+  .radii div { text-align: center; font-size: 10px; color: hsl(var(--muted-foreground)); }
+  .radii i { display: block; width: 72px; height: 52px; border: 1.5px solid hsl(var(--foreground) / .5); background: hsl(var(--card)); margin-bottom: 6px; }
+  .icons { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+  .icons div { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: 1px solid hsl(var(--border)); border-radius: 8px; background: hsl(var(--card)); font-size: 11px; line-height: 1.35; }
+  .icons div span small { display: block; color: hsl(var(--muted-foreground)); font-size: 10px; }
+  .icons svg { flex: 0 0 auto; }
+
+  /* Stage demo (phone) */
+  .phone-wrap { position: relative; margin: 0 auto; }
+  .phone { position: absolute; top: 0; left: 0; transform-origin: top left; border: 1px solid hsl(var(--border)); border-radius: 34px; overflow: hidden; box-shadow: var(--shadow-xl); background-color: hsl(var(--background)); transition: width var(--dur-screen) var(--ease), height var(--dur-screen) var(--ease); }
+  .phone[data-orient="portrait"]  { width: 320px; height: 600px; --cell-size: 30px; }
+  .phone[data-orient="landscape"] { width: 620px; height: 300px; --cell-size: 27px; }
+  .phone .cell { font-size: 13px; }
+  .phone .ph-stage { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+  .phone .ph-start { position: absolute; inset: 0; margin: auto; width: fit-content; height: fit-content; padding: .6rem 1.6rem; font-size: 12px; }
+  .phone .abs { position: absolute; }
+  .phone .ph-header { top: 22px; left: 0; right: 0; text-align: center; }
+  .phone .ph-header .wordmark { font-size: 22px; line-height: 1.2; padding-left: .3em; }
+  .phone .ph-header .tagline { font-size: 10px; margin-top: 2px; }
+  .phone .ph-header .code-display { font-size: 20px; margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .phone .ph-header .code-display svg { width: 15px; height: 15px; color: hsl(var(--foreground) / .7); }
+  .phone .ph-header .whisper { font-size: 9px; }
+  .phone .ph-footer { bottom: 26px; left: 0; right: 0; text-align: center; }
+  .phone .ph-footer .overline { font-size: 11px; }
+  .phone .ph-footer .val { font-size: 15px; font-weight: 500; }
+  .phone .ph-footer .stepper { display: inline-flex; align-items: center; gap: 22px; }
+  .phone .ph-footer .stepper svg { width: 20px; height: 20px; color: hsl(var(--foreground) / .7); }
+  .phone[data-orient="landscape"] .ph-header { top: 10px; }
+  .phone[data-orient="landscape"] .ph-header .wordmark { font-size: 16px; }
+  .phone[data-orient="landscape"] .ph-header .code-display { font-size: 14px; margin-top: 2px; }
+  .phone[data-orient="landscape"] .ph-header .tagline, .phone[data-orient="landscape"] .ph-header .whisper { display: none; }
+  .phone[data-orient="landscape"] .ph-footer { bottom: 10px; }
+  .phone .fab { width: 34px; height: 34px; }
+  .phone .fab svg { width: 17px; height: 17px; }
+  .phone .ph-back { top: 18px; left: 14px; }
+  .phone .ph-help { top: 18px; right: 14px; }
+  .phone .ph-stats { top: 16px; left: 0; right: 0; margin: 0 auto; width: fit-content; padding: 6px 12px; gap: 10px; }
+  .phone .ph-stats .eyebrow { font-size: 8px; line-height: 1.2; }
+  .phone .ph-stats .stat-value { font-size: 11px; }
+  .phone .ph-stats .chrome-divider { height: 18px; margin: 0; }
+  .phone .ph-bar { bottom: 18px; left: 0; right: 0; margin: 0 auto; width: fit-content; padding: 4px 10px; gap: 2px; }
+  .phone .ph-bar .icon-button { padding: 7px; }
+  .phone .ph-bar .icon-button svg { width: 17px; height: 17px; }
+  .phone[data-orient="landscape"] .ph-stats { top: 0; bottom: 0; left: 14px; right: auto; margin: auto 0; height: fit-content; flex-direction: column; padding: 10px 8px; }
+  .phone[data-orient="landscape"] .ph-stats .chrome-divider { width: 20px; height: 1px; }
+  .phone[data-orient="landscape"] .ph-bar { top: 0; bottom: 0; right: 14px; left: auto; margin: auto 0; height: fit-content; flex-direction: column; padding: 8px 4px; }
+  .phone[data-orient="landscape"] .ph-bar .chrome-divider { width: 18px; height: 1px; margin: 2px 0; }
+  .phone .slow { transition-duration: var(--dur-screen); }
+  .steps { list-style: none; padding: 0; margin: 18px 0 0; display: grid; gap: 6px; }
+  .steps li { font-size: 12px; line-height: 1.55; padding: 8px 12px 8px 36px; border-radius: 8px; position: relative; color: hsl(var(--muted-foreground)); transition: all var(--dur-base) var(--ease); }
+  .steps li::before { content: attr(data-n); position: absolute; left: 12px; top: 8px; font-weight: 600; }
+  .steps li.now { background: hsl(var(--foreground) / .06); color: hsl(var(--foreground)); }
+
+  /* Z ladder */
+  .zl { display: grid; gap: 4px; }
+  .zl div { display: grid; grid-template-columns: 44px 1fr; align-items: center; gap: 12px; font-size: 12px; }
+  .zl b { font-weight: 600; text-align: right; }
+  .zl span { padding: 7px 12px; border-radius: 8px; border: 1px solid hsl(var(--border)); background: hsl(var(--card)); box-shadow: var(--shadow-sm); }
+
+  /* Motion */
+  .ruler { display: grid; gap: 6px; }
+  .ruler div { display: grid; grid-template-columns: 74px 1fr 48px; align-items: center; gap: 10px; font-size: 11px; }
+  .ruler i { display: block; height: 8px; border-radius: 9999px; background: hsl(var(--foreground) / .8); transform-origin: left; }
+  .ruler span:last-child { color: hsl(var(--muted-foreground)); text-align: right; }
+  .ruler .play i { animation: z-grow var(--d) var(--ease) both; }
+  @keyframes z-grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  .anim-target { width: 96px; height: 96px; border-radius: 1rem; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+  .pulse-rows { display: grid; gap: 14px; }
+  .pulse-rows .lbl { font-size: 11px; color: hsl(var(--muted-foreground)); margin-bottom: 6px; }
+  .pulse-rows .cells { display: flex; gap: 0; width: fit-content; padding: 3px; background: hsl(var(--foreground) / .1); border-radius: 8px; --cell-size: 40px; }
+  .pulse-rows .cell { font-size: 16px; }
+  .cell.no-sync { animation-delay: 0s !important; }
+
+  /* Interaction */
+  .dial-demo { display: grid; gap: 24px; grid-template-columns: minmax(0, 1fr); align-items: center; }
+  @media (min-width: 640px) { .dial-demo { grid-template-columns: auto minmax(0, 1fr); } }
+  .dial-board { --cell-size: 64px; grid-template-columns: repeat(3, var(--cell-size)); margin: 0 auto; }
+  .dial-board .cell { font-size: 26px; touch-action: none; -webkit-touch-callout: none; }
+  .dial-board .cell-note { font-size: 10px; }
+  .dial-layer { position: fixed; z-index: 50; pointer-events: none; transform: translate(-50%, -50%); }
+  .legend { display: grid; gap: 8px; font-size: 12px; line-height: 1.5; }
+  .legend div { display: grid; grid-template-columns: 26px 1fr; gap: 10px; align-items: start; }
+  .legend .dot { width: 22px; height: 22px; border-radius: 50%; font-size: 10px; font-weight: 600; display: flex; align-items: center; justify-content: center; border: 2px solid hsl(var(--foreground) / .2); background: hsl(var(--card)); }
+  .dial-status { font-size: 12px; min-height: 1.6em; margin-top: 10px; color: hsl(var(--foreground)); }
+  .holdbtn { touch-action: none; -webkit-touch-callout: none; }
+  .ladder-track { position: relative; height: 10px; border-radius: 9999px; background: hsl(var(--foreground) / .08); margin: 26px 0 40px; }
+  .ladder-track .fill { position: absolute; inset: 0 auto 0 0; width: 0; border-radius: 9999px; background: hsl(var(--foreground)); }
+  .ladder-track .tick { position: absolute; top: -6px; width: 2px; height: 22px; background: hsl(var(--border)); transition: background var(--dur-fast); }
+  .ladder-track .tick span { position: absolute; top: 26px; transform: translateX(-50%); font-size: 10px; white-space: nowrap; color: hsl(var(--muted-foreground)); text-align: center; line-height: 1.35; transition: color var(--dur-fast); }
+  .ladder-track .tick.hit { background: hsl(var(--foreground)); }
+  .ladder-track .tick.hit span { color: hsl(var(--foreground)); }
+  .ladder-track .tick:last-child span { transform: translateX(-90%); text-align: right; }
+
+  /* Feedback */
+  .state-row { display: flex; flex-wrap: wrap; gap: 14px 18px; }
+  .state-row figure { margin: 0; text-align: center; }
+  .state-row figure .cell { --cell-size: 52px; font-size: 22px; margin: 0 auto 6px; border-radius: 2px; }
+  .state-row figcaption { font-size: 10px; text-transform: uppercase; letter-spacing: var(--tracking-wider); color: hsl(var(--muted-foreground)); max-width: 90px; line-height: 1.4; }
+  .tint-panel { border-radius: 12px; padding: 24px; display: flex; flex-direction: column; align-items: center; gap: 16px; border: 1px solid hsl(var(--border)); }
+  .tint-panel .board { --cell-size: 32px; grid-template-columns: repeat(3, var(--cell-size)); }
+  .tint-panel .cell { font-size: 15px; }
+  .toast-demo { position: relative; min-height: 380px; overflow: hidden; padding-bottom: 170px; }
+  .toast-demo .list { max-width: 448px; margin: 0 auto; display: grid; gap: 8px; }
+  .toast-demo .item { position: relative; overflow: hidden; transition: height var(--dur-base) var(--ease), opacity var(--dur-base) var(--ease), margin var(--dur-base) var(--ease); }
+  .toast-demo .list-card { display: flex; gap: 14px; align-items: center; width: 100%; text-align: left; font: inherit; color: inherit; }
+  .toast-demo .thumb { width: 44px; height: 44px; border-radius: 3px; flex: 0 0 auto; background: hsl(var(--border)); display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; padding: 0; overflow: hidden; }
+  .toast-demo .thumb i { background: hsl(var(--card)); }
+  .toast-demo .thumb i.g { background: hsl(var(--muted)); }
+  .toast-demo .del { position: absolute; top: 8px; right: 8px; width: 26px; height: 26px; border-radius: 50%; border: 1px solid hsl(var(--border)); background: hsl(var(--card)); box-shadow: var(--shadow-sm); display: flex; align-items: center; justify-content: center; color: hsl(var(--muted-foreground)); cursor: pointer; transition: all var(--dur-fast) var(--ease); opacity: 0; transform: scale(.9); }
+  .toast-demo .item:hover .del, .toast-demo .del:focus-visible { opacity: 1; transform: scale(1); }
+  @media (hover: none) { .toast-demo .del { opacity: 1; transform: none; } }
+  .toast-demo .del:hover { color: hsl(var(--destructive)); border-color: hsl(var(--destructive) / .5); }
+  .toast-stack { position: absolute; left: 0; right: 0; bottom: 16px; margin: 0 auto; width: min(90%, 360px); display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .toast-stack .toast { width: 100%; box-sizing: border-box; animation: z-toast-in 250ms var(--ease) both; }
+  @keyframes z-toast-in { from { opacity: 0; transform: translateY(.75rem) scale(.95); } to { opacity: 1; transform: none; } }
+  .undo-all { padding: .375rem 1rem; border-radius: 9999px; border: 0; cursor: pointer; font: inherit; font-size: .75rem; text-transform: uppercase; letter-spacing: var(--tracking-wider); background: hsl(var(--foreground)); color: hsl(var(--background)); box-shadow: var(--shadow-lg); }
+
+  /* Components gallery */
+  .gallery { display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr); }
+  @media (min-width: 640px) { .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .gallery > div { border: 1px solid hsl(var(--border)); border-radius: 12px; padding: 36px 16px 16px; position: relative; background: hsl(var(--background)); min-height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
+  .gallery > div.span2 { grid-column: 1 / -1; }
+  .gallery > div > .eyebrow:first-child { position: absolute; top: 12px; left: 14px; }
+  .gallery .spec-line { font-size: 10px; color: hsl(var(--muted-foreground)); text-align: center; line-height: 1.5; max-width: 320px; }
+  .stepper { display: flex; align-items: center; gap: 16px; }
+  .stepper .mid { text-align: center; min-width: 120px; }
+  .stepper .val { font-size: 1.125rem; font-weight: 500; }
+  .codesel { display: flex; align-items: center; gap: 10px; }
+  .codesel .code-display { background: none; border: 0; color: inherit; font-family: inherit; cursor: pointer; padding: 0; }
+  .codesel .code-input { width: 7.5em; }
+  .dialog-mock { width: 100%; max-width: 340px; text-align: center; padding: 22px 18px; border-radius: 1rem; background: hsl(var(--card)); border: 1px solid hsl(var(--border)); box-shadow: var(--shadow-xl); box-sizing: border-box; }
+  .dialog-mock .disc { width: 44px; height: 44px; border-radius: 50%; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; background: #fef3c7; color: #d97706; }
+  .dark .dialog-mock .disc { background: rgb(120 53 15 / .3); color: #fbbf24; }
+  .dialog-mock h5 { font-size: 16px; margin: 0 0 6px; font-weight: 600; }
+  .dialog-mock p { font-size: 12px; color: hsl(var(--muted-foreground)); margin: 0 0 14px; line-height: 1.6; }
+  .bmc { display: inline-block; background: #ffdd00; color: #000; border-radius: 8px; padding: 8px 16px; font-size: 13px; font-weight: 600; text-decoration: none; }
+  .link-whisper { background: none; border: 0; font: inherit; font-size: 12px; color: hsl(var(--muted-foreground) / .6); cursor: pointer; margin-top: 10px; display: block; margin-inline: auto; }
+  .link-whisper:hover { color: hsl(var(--muted-foreground)); }
+
+  /* Systems */
+  .url { font-size: 13px; line-height: 2.4; word-break: break-all; padding: 16px; background: hsl(var(--card)); border: 1px solid hsl(var(--border)); border-radius: var(--radius); }
+  .url .seg-p { border-bottom: 2px solid hsl(var(--foreground) / .25); padding-bottom: 2px; cursor: help; transition: all var(--dur-fast); }
+  .url .seg-p:hover, .url .seg-p.on { border-bottom-color: hsl(var(--foreground)); background: hsl(var(--foreground) / .06); }
+  .url-explain { font-size: 12px; min-height: 3.2em; margin-top: 10px; color: hsl(var(--muted-foreground)); }
+  .url-explain b { color: hsl(var(--foreground)); font-weight: 600; }
+  .timeline { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; margin: 24px 0 8px; position: relative; }
+  .timeline::before { content: ""; position: absolute; left: 12.5%; right: 12.5%; top: 9px; height: 1px; background: hsl(var(--border)); }
+  .timeline div { text-align: center; position: relative; font-size: 11px; line-height: 1.45; padding: 0 4px; }
+  .timeline div::before { content: ""; display: block; width: 18px; height: 18px; margin: 0 auto 10px; border-radius: 50%; background: hsl(var(--card)); border: 2px solid hsl(var(--foreground)); box-sizing: border-box; }
+  .timeline div.fill::before { background: hsl(var(--foreground)); }
+  .timeline b { display: block; font-weight: 600; }
+  .timeline span { color: hsl(var(--muted-foreground)); }
+  .refimg { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; align-items: center; }
+  @media (min-width: 640px) { .refimg { grid-template-columns: 1fr 1fr; } }
+  .refimg img { width: 100%; border-radius: 12px; border: 1px solid hsl(var(--border)); }
+
+  /* Checklist */
+  .check-group { margin: 18px 0; }
+  .check-group h4 { display: flex; justify-content: space-between; margin: 0 0 6px; }
+  .check-group h4 span { font-weight: 400; color: hsl(var(--muted-foreground)); font-size: 11px; }
+  .check { display: flex; gap: 12px; align-items: flex-start; padding: 7px 0; font-size: 13px; line-height: 1.5; cursor: pointer; border-bottom: 1px solid hsl(var(--border) / .5); }
+  .check input { appearance: none; -webkit-appearance: none; flex: 0 0 auto; width: 18px; height: 18px; margin: 1px 0 0; border-radius: 5px; border: 1.5px solid hsl(var(--foreground) / .3); background: hsl(var(--card)); cursor: pointer; display: grid; place-content: center; transition: all var(--dur-fast) var(--ease); }
+  .check input::after { content: ""; width: 9px; height: 5px; border: 2px solid hsl(var(--background)); border-top: 0; border-right: 0; transform: rotate(-45deg) translate(1px, -1px); opacity: 0; }
+  .check input:checked { background: hsl(var(--foreground)); border-color: hsl(var(--foreground)); }
+  .check input:checked::after { opacity: 1; }
+  .check input:checked + span { color: hsl(var(--muted-foreground)); text-decoration: line-through; text-decoration-color: hsl(var(--muted-foreground) / .5); }
+  .progress { height: 4px; border-radius: 9999px; background: hsl(var(--foreground) / .08); overflow: hidden; margin: 8px 0 4px; }
+  .progress i { display: block; height: 100%; width: 0; background: hsl(var(--success)); transition: width var(--dur-chrome) var(--ease); }
+
+  footer { text-align: center; padding: 64px 16px 48px; }
+  footer .wordmark { font-size: 18px; padding-left: .3em; }
+</style>
+</head>
+<body class="halftone-bg">
+
+<!-- ============================== TOP BAR ============================== -->
+<header class="topbar is-away" id="topbar">
+  <a class="mark" href="#top">ZTYLE<small>izzardry</small></a>
+  <div class="topbar-actions">
+    <span class="theme-label" id="themeLabel">auto</span>
+    <button class="icon-button" id="themeBtn" aria-label="Change theme"><span data-icon="monitor"></span></button>
+    <button class="icon-button" id="menuBtn" aria-label="Contents"><span data-icon="menu"></span></button>
+  </div>
+</header>
+
+<div class="sheet" id="sheet" hidden>
+  <div class="sheet-head">
+    <button class="icon-button" id="sheetClose" aria-label="Close contents"><span data-icon="arrow-left"></span></button>
+    <h2>Contents</h2>
+  </div>
+  <nav id="sheetNav"></nav>
+</div>
+
+<div class="layout">
+  <aside class="toc" id="toc" aria-label="Contents"></aside>
+
+  <main id="top">
+
+<!-- ============================== HERO ============================== -->
+<div class="hero">
+  <div class="board board--preview hero-board" id="heroBoard" aria-hidden="true"></div>
+  <div class="hero-top">
+    <h1 class="wordmark">ZTYLE</h1>
+    <p class="tagline">Zero Distractions. Just Games.</p>
+  </div>
+  <div class="hero-center">
+    <a class="btn-primary" href="#idea" style="text-decoration:none">Start reading</a>
+  </div>
+  <div class="hero-bottom">
+    <span class="overline">the izzardry style guide</span>
+    <span class="meta">extracted from Zudoku · Nov 2026</span>
+    <a href="#idea" class="bounce" aria-label="Scroll to the guide"><span data-icon="chevron-down" data-size="24"></span></a>
+  </div>
+</div>
+
+<!-- ============================== THE IDEA ============================== -->
+<section id="idea" data-toc="The idea" data-n="00">
+  <span class="eyebrow">Introduction</span>
+  <h2 class="sec"><span class="n">00</span>The idea</h2>
+  <p class="lede">This page teaches how an izzardry game looks, moves, speaks and behaves, so the next game feels like a sibling of the last.</p>
+
+  <div class="rule"><span class="eyebrow">In one line</span><p>An izzardry game is a monochrome, monospaced, paper-quiet surface with the board in the middle. Everything else floats, appears only when needed, and gets out of the way.</p></div>
+
+  <p>Everything here was extracted from <b>Zudoku</b>, the first izzardry game, and is shown with its real screenshots. Zudoku is the <i>reference implementation</i>: when this guide is silent, do what Zudoku does. Where Zudoku departs from the guide, the guide wins (see <a href="#audit">the audit</a>).</p>
+
+  <div class="shots">
+    <figure><img src="assets/screenshots/01-start-mobile.png" alt="Start screen" loading="lazy" /><figcaption>Start</figcaption></figure>
+    <figure><img src="assets/screenshots/02-game-mobile.png" alt="Game" loading="lazy" /><figcaption>Game</figcaption></figure>
+    <figure><img src="assets/screenshots/05-radial-commit.png" alt="Radial dial" loading="lazy" /><figcaption>Radial dial</figcaption></figure>
+    <figure><img src="assets/screenshots/03-tutorial-mobile.png" alt="Tutorial" loading="lazy" /><figcaption>Tutorial</figcaption></figure>
+    <figure><img src="assets/screenshots/07-completion.png" alt="Completion" loading="lazy" /><figcaption>Completion</figcaption></figure>
+    <figure><img class="wide" src="assets/screenshots/16-game-landscape.png" alt="Landscape" loading="lazy" /><figcaption>Landscape</figcaption></figure>
+    <figure><img class="wide" src="assets/screenshots/11-history-desktop.png" alt="History" loading="lazy" /><figcaption>History</figcaption></figure>
+  </div>
+
+  <h3>How to read this guide</h3>
+  <p>Each chapter follows the same five beats. Skim the rules, or read the whole chapter when you need the detail.</p>
+  <div class="grid-2">
+    <div class="dd" style="margin:0;grid-template-columns:1fr"><div><span class="eyebrow" style="display:block;margin-bottom:6px">1 · The rule</span><p>One sentence you can remember. If you only read these, you'll get 80% right.</p></div></div>
+    <div class="dd" style="margin:0;grid-template-columns:1fr"><div><span class="eyebrow" style="display:block;margin-bottom:6px">2 · Why</span><p>The reasoning, so you can decide cases the guide doesn't cover.</p></div></div>
+    <div class="dd" style="margin:0;grid-template-columns:1fr"><div><span class="eyebrow" style="display:block;margin-bottom:6px">3 · Try it</span><p>A live demo built from the actual tokens. Click, hold, drag.</p></div></div>
+    <div class="dd" style="margin:0;grid-template-columns:1fr"><div><span class="eyebrow" style="display:block;margin-bottom:6px">4 · Spec · 5 · Do / Don't</span><p>Exact values to copy, then the common mistakes.</p></div></div>
+  </div>
+</section>
+
+<!-- ============================== TEN RULES ============================== -->
+<section id="rules" data-toc="Ten rules" data-n="01">
+  <span class="eyebrow">Introduction</span>
+  <h2 class="sec"><span class="n">01</span>The ten rules</h2>
+  <p class="lede">The whole guide in ten lines. Every later chapter expands one of these.</p>
+  <ol class="rules">
+    <li><a href="#layout"><b>The board is the hero.</b>Always centered, never moves between screens. Menus fade in around it.</a></li>
+    <li><a href="#color"><b>Grayscale first.</b>All UI is neutral gray. Color only means something: red = broken, green = done.</a></li>
+    <li><a href="#type"><b>Everything is monospace.</b>One mono face. Hierarchy from size, weight, case and tracking.</a></li>
+    <li><a href="#surfaces"><b>Pills and circles.</b>Actions are round. Containers are rounded rectangles.</a></li>
+    <li><a href="#layout"><b>Chrome floats.</b>Translucent bars pinned to safe edges. Tap the background to hide them all.</a></li>
+    <li><a href="#motion"><b>Motion explains.</b>Fade + short slide from where it lives, ease-out, 150–500 ms.</a></li>
+    <li><a href="#interaction"><b>Touch is first-class.</b>Long-press, drag-to-dial, swipe, each with a mouse/keyboard twin.</a></li>
+    <li><a href="#systems"><b>Every puzzle has a code.</b>Deterministic content from a short code. The URL is the save game.</a></li>
+    <li><a href="#feedback"><b>Forgiving by default.</b>Undo everything, autosave everything, undo toasts instead of "Are you sure?".</a></li>
+    <li><a href="#respect"><b>Respect the player.</b>No ads, no accounts. One gentle donation ask, once.</a></li>
+  </ol>
+</section>
+
+<!-- ============================== PART I ============================== -->
+<div class="part-head" id="part-1" data-part="Part I · Foundations">
+  <span class="eyebrow">Part I</span>
+  <h2>Foundations</h2>
+  <p class="lede">Color, type, surfaces and icons: the materials everything else is made of.</p>
+</div>
+
+<!-- COLOR -->
+<section id="color" data-toc="Color" data-n="02">
+  <span class="eyebrow">Foundations</span>
+  <h2 class="sec"><span class="n">02</span>Color</h2>
+  <div class="rule"><span class="eyebrow">The rule</span><p>Build everything from true grays. Use color only to say something: red means a rule is broken, green means something is done.</p></div>
+  <div class="why"><span class="eyebrow">Why</span><p>A gray UI disappears and lets the board be the only thing you look at. Because color is so rare, a red cell or a green page can't be missed and can't be misread.</p></div>
+
+  <h3>Tokens, light and dark</h3>
+  <p>All neutrals have <code>hue 0, saturation 0</code>. Light and dark are mirror images: <code>primary</code> <i>is</i> <code>foreground</code>. Tokens are HSL triplets, so any token takes an alpha: <code>hsl(var(--foreground) / .1)</code>.</p>
+  <div class="scheme-pair">
+    <div class="scheme light"><span class="eyebrow">Light</span><div id="swLight"></div></div>
+    <div class="scheme dark"><span class="eyebrow">Dark</span><div id="swDark"></div></div>
+  </div>
+
+  <h3>The alpha ladder</h3>
+  <p>Most of the nuance comes from <b>foreground at low alpha</b>, not from more gray tokens. Use these steps and nothing in between. Flip the theme (top right) and watch them invert.</p>
+  <div class="ladder" id="ladder"></div>
+
+  <h3>Color that means something</h3>
+  <div class="state-row" id="semanticRow"></div>
+  <p class="demo-caption">The page-wide tint is the signature end-state: the <i>whole background</i> fades to <code>success/12</code> (solved) or <code>destructive/12</code> (full but wrong) over 1 s. See it live in <a href="#feedback">Feedback</a>.</p>
+
+  <div class="dd">
+    <div class="do"><span class="eyebrow">✓ Do</span><ul><li>Use <code>foreground/5…/30</code> for hover, selection and dividers</li><li>Pair every color with a second signal (ring, ✓, weight)</li><li>Follow the system theme; ship both palettes</li></ul></div>
+    <div class="dont"><span class="eyebrow">× Don't</span><ul><li>Introduce a "brand color" or colored primary buttons</li><li>Use green for "go" or red for decoration</li><li>Leave the browser's blue focus ring visible</li></ul></div>
+  </div>
+</section>
+
+<!-- TYPOGRAPHY -->
+<section id="type" data-toc="Typography" data-n="03">
+  <span class="eyebrow">Foundations</span>
+  <h2 class="sec"><span class="n">03</span>Typography</h2>
+  <div class="rule"><span class="eyebrow">The rule</span><p>One monospace typeface for everything. Hierarchy comes from size, weight, case and tracking, never from a second font.</p></div>
+  <div class="why"><span class="eyebrow">Why</span><p>Mono gives the calm feel of graph paper or a terminal. Digits line up in grids and timers for free, and uppercase-plus-tracking labels look engineered rather than loud.</p></div>
+
+  <h3>The roles</h3>
+  <div id="typeSpecs"></div>
+
+  <h3>Weight follows size, inversely</h3>
+  <p>Big text is <b>light</b>, small text is regular. The one exception is fixed game data (givens), which is <b>bold</b> so it reads as "printed" next to the player's lighter "handwriting".</p>
+  <div class="weights">
+    <div><div class="big" style="font-weight:300">Aa</div><span class="eyebrow">300 · display</span></div>
+    <div><div class="big" style="font-weight:400">Aa</div><span class="eyebrow">400 · body, player</span></div>
+    <div><div class="big" style="font-weight:500">Aa</div><span class="eyebrow">500 · values</span></div>
+    <div><div class="big" style="font-weight:600">Aa</div><span class="eyebrow">600 · conflict, dial</span></div>
+    <div><div class="big" style="font-weight:700">Aa</div><span class="eyebrow">700 · givens</span></div>
+  </div>
+
+  <h3>Casing</h3>
+  <div class="tbl-wrap"><table class="tbl">
+    <tr><th>Element</th><th>Case</th><th>How</th></tr>
+    <tr><td>Wordmark, board codes</td><td>UPPERCASE</td><td>typed / coerced in code</td></tr>
+    <tr><td>Buttons, labels, eyebrows</td><td>UPPERCASE</td><td><code>text-transform</code>; strings stay "Title Case" for translators</td></tr>
+    <tr><td>Headings in dialogs</td><td>Sentence / Title</td><td>as written</td></tr>
+    <tr><td>Whisper text</td><td>lowercase</td><td><span class="whisper">board code</span>, <span class="whisper">maybe another time</span></td></tr>
+  </table></div>
+
+  <h3>The typeface</h3>
+  <pre><code>font-family: "Fira Code", "JetBrains Mono", "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+font-variant-ligatures: none;      /* "=" and "->" in copy must stay literal */
+font-variant-numeric: tabular-nums;</code></pre>
+  <p><b>Bundle the font</b> (<code>woff2</code>, weights 300–700) so the PWA looks the same offline and on every OS. Zudoku currently ships no font, so it only looks right on machines that have Fira Code installed. Its Tailwind <code>font-mono</code> class also points to a <i>different</i> stack than the body text. The Ztyle preset fixes both.</p>
+
+  <div class="dd">
+    <div class="do"><span class="eyebrow">✓ Do</span><ul><li><code>m:ss</code> times: <code>0:42</code>, <code>1:04:09</code></li><li>Wide tracking for codes and stats: <code>IZZARD</code></li><li>Apply caps with CSS</li></ul></div>
+    <div class="dont"><span class="eyebrow">× Don't</span><ul><li>Mix a sans-serif in "for readability"</li><li>Bold display text</li><li>Type translated strings in ALL CAPS</li></ul></div>
+  </div>
+</section>
+
+<!-- SURFACES -->
+<section id="surfaces" data-toc="Surfaces & icons" data-n="04">
+  <span class="eyebrow">Foundations</span>
+  <h2 class="sec"><span class="n">04</span>Surfaces &amp; icons</h2>
+  <div class="rule"><span class="eyebrow">The rule</span><p>The page is dotted paper. Things sit on it at three depths only: flat, floating glass and overlay. Actions are round; containers are rounded rectangles.</p></div>
+  <div class="why"><span class="eyebrow">Why</span><p>Few depths keep the scene readable at a glance. Translucent, blurred chrome tells you it sits <i>over</i> the game and will go away, unlike the game itself.</p></div>
+
+  <h3>The halftone page</h3>
+  <pre><code>.halftone-bg { background-image: radial-gradient(circle, hsl(var(--foreground) / .03) 1px, transparent 1px);
+               background-size: 8px 8px; }</code></pre>
+  <p>It goes on the root of every game. Because it is built from <code>--foreground</code>, it inverts in dark mode by itself. You're looking at it right now.</p>
+
+  <h3>Three depths</h3>
+  <div class="elev-stage halftone-bg">
+    <div class="board" id="elevBoard"></div>
+    <div class="card flat-card"><span class="eyebrow" style="display:block">Flat</span>bg-card · border</div>
+    <div class="bubble"><span class="eyebrow" style="display:block">Overlay</span>card/95 · blur · shadow-xl</div>
+    <div class="glass chrome-bar"><button class="icon-button"><span data-icon="undo"></span></button><button class="icon-button"><span data-icon="redo"></span></button><span class="chrome-divider"></span><span class="eyebrow" style="padding:0 6px">Floating · card/80 · blur · shadow-lg</span></div>
+  </div>
+  <p class="demo-caption">Scrims are blurred background (<code>background/80 + blur</code>), never black.</p>
+
+  <h3>Radius scale</h3>
+  <div class="radii">
+    <div><i style="border-radius:9999px;width:96px"></i>full · actions</div>
+    <div><i style="border-radius:16px"></i>2xl · panels</div>
+    <div><i style="border-radius:12px"></i>xl · toasts</div>
+    <div><i style="border-radius:8px"></i>lg · cards</div>
+    <div><i style="border-radius:6px"></i>md · menu</div>
+    <div><i style="border-radius:4px;width:52px"></i>sm · thumbs</div>
+    <div><i style="border-radius:0;width:40px;height:40px"></i>none · cells</div>
+  </div>
+
+  <h3>Lines</h3>
+  <p>Thin lines are <code>border</code>-tinted; thick group dividers are <code>foreground/30</code>. Dividers inside pills are short (<code>24px</code>) and centered, never full-length. Inputs have no box, just a 2 px underline.</p>
+
+  <h3>Icon vocabulary</h3>
+  <p><a href="https://lucide.dev">Lucide</a>, 2 px stroke, never filled. 20 px in chrome, 16 px beside text, 12 px in fine print. <b>Same concept, same icon, in every game.</b></p>
+  <div class="icons" id="iconGrid"></div>
+</section>
+
+<!-- ============================== PART II ============================== -->
+<div class="part-head" id="part-2" data-part="Part II · Space & time">
+  <span class="eyebrow">Part II</span>
+  <h2>Space &amp; time</h2>
+  <p class="lede">Where things go, and how they arrive and leave.</p>
+</div>
+
+<!-- LAYOUT -->
+<section id="layout" data-toc="Layout: the stage" data-n="05">
+  <span class="eyebrow">Space &amp; time</span>
+  <h2 class="sec"><span class="n">05</span>Layout: the stage</h2>
+  <div class="rule"><span class="eyebrow">The rule</span><p>One stage, one board, dead center. "Screens" are just different chrome fading in and out around a board that never moves.</p></div>
+  <div class="why"><span class="eyebrow">Why</span><p>With no page transitions, there's nothing to get lost in. The start screen shows an honest, blurred preview of the exact puzzle you're about to play, and starting simply brings it into focus.</p></div>
+
+  <div class="demo halftone-bg" id="stageDemo">
+    <span class="eyebrow demo-label">Try it</span>
+    <div class="phone-wrap" id="phoneWrap">
+      <div class="phone halftone-bg" id="phone" data-orient="portrait">
+        <div class="ph-stage" id="phStage">
+          <div class="board board--transition board--preview" id="phBoard"></div>
+          <button class="btn-primary ph-start abs slow chrome-anim" id="phStart">Start</button>
+        </div>
+        <div class="abs ph-header chrome-anim slow" id="phHeader">
+          <div class="wordmark">ZUDOKU</div>
+          <div class="tagline">Zero Distractions. Just Sudoku.</div>
+          <div class="code-display"><span data-icon="refresh"></span>IZZARD<span data-icon="pencil"></span></div>
+          <div class="whisper">board code</div>
+        </div>
+        <div class="abs ph-footer chrome-anim slow" id="phFooter">
+          <div class="stepper"><span data-icon="chevron-left"></span><div><div class="overline">Level 5</div><div class="val">Medium</div></div><span data-icon="chevron-right"></span></div>
+        </div>
+        <button class="fab abs ph-back chrome-anim" id="phBack" aria-label="Back"><span data-icon="arrow-left"></span></button>
+        <div class="glass chrome-panel abs ph-stats chrome-anim" id="phStats">
+          <div><div class="eyebrow">Board</div><div class="stat-value">IZZARD</div></div><span class="chrome-divider"></span>
+          <div><div class="eyebrow">Level</div><div class="stat-value">5</div></div><span class="chrome-divider"></span>
+          <div><div class="eyebrow">Time</div><div class="stat-value" id="phTime">0:00</div></div>
+        </div>
+        <button class="fab abs ph-help chrome-anim" aria-label="Help"><span data-icon="help"></span></button>
+        <div class="glass chrome-bar abs ph-bar chrome-anim" id="phBar">
+          <button class="icon-button"><span data-icon="undo"></span></button><button class="icon-button" aria-disabled="true"><span data-icon="redo"></span></button><span class="chrome-divider"></span><button class="icon-button"><span data-icon="lightbulb"></span></button><button class="icon-button"><span data-icon="shield-check"></span></button><button class="icon-button"><span data-icon="share"></span></button>
+        </div>
+      </div>
+    </div>
+    <div class="demo-controls" style="justify-content:center">
+      <div class="seg" role="group" aria-label="Orientation"><button data-orient="portrait" aria-pressed="true">Portrait</button><button data-orient="landscape" aria-pressed="false">Landscape</button></div>
+    </div>
+    <ol class="steps" id="phSteps">
+      <li data-n="1">Start screen: the board is a <b>blurred preview</b> (8 px, 60%). Header above, level below, one Start pill on top. <b>Press START.</b></li>
+      <li data-n="2">In game: the board un-blurs <i>in place</i> (500 ms); chrome fades in from its edges. <b>Tap empty space</b> to hide all chrome.</li>
+      <li data-n="3">Zero distractions: just the board. Tap again to bring the chrome back, or press <b>←</b> to return to the start.</li>
+    </ol>
+  </div>
+
+  <h3>Portrait vs. mobile landscape</h3>
+  <p>Mobile landscape = <code>width &gt; height</code> <i>and</i> the short side is under 768 px. In landscape, the top pill becomes a <b>left rail</b> and the bottom toolbar becomes a <b>right rail</b>. Switch the demo above to see it.</p>
+
+  <h3>Safe areas</h3>
+  <p>Every edge-pinned element uses <code>max(design inset, env(safe-area-inset-*))</code> with <code>viewport-fit=cover</code>:</p>
+  <div class="tbl-wrap"><table class="tbl">
+    <tr><th>Element</th><th>Inset</th></tr>
+    <tr><td>Top round buttons</td><td><code>max(1.5rem, safe-top)</code></td></tr>
+    <tr><td>Top pill / start header</td><td><code>max(1rem, safe-top)</code></td></tr>
+    <tr><td>Side rails &amp; buttons</td><td><code>max(1rem, safe-left/right)</code></td></tr>
+    <tr><td>Bottom toolbar</td><td><code>max(1rem, safe-bottom)</code></td></tr>
+    <tr><td>Toasts, FAB</td><td><code>max(1.5rem, safe-bottom + .5rem)</code></td></tr>
+    <tr><td>Start footer</td><td><code>max(2rem, safe-bottom + 1rem)</code></td></tr>
+  </table></div>
+
+  <h3>Board sizing</h3>
+  <pre><code>--cell-size: clamp(28px, min(8vw, 8vh), 52px);   /* 9 columns → ≤ 72% of the short side */</code></pre>
+  <p>For other grids use <code>min(Nvw, Nvh)</code> with <code>N ≈ 72 / columns</code>. The board never scrolls, from 320 × 568 to 4K.</p>
+
+  <h3>Layers</h3>
+  <div class="zl">
+    <div><b>100</b><span>Tutorial overlay</span></div>
+    <div><b>50</b><span style="margin-left:12px">Back button, overlays, toasts, radial dial (portaled), version stamp</span></div>
+    <div><b>40</b><span style="margin-left:24px">Floating game chrome: stats, toolbar, help, language</span></div>
+    <div><b>30</b><span style="margin-left:36px">Sticky header, back-to-top</span></div>
+    <div><b>20</b><span style="margin-left:48px">Start header &amp; footer</span></div>
+    <div><b>10</b><span style="margin-left:60px">Start pill over the board</span></div>
+    <div><b>0</b><span style="margin-left:72px">The stage &amp; board</span></div>
+  </div>
+
+  <div class="dd">
+    <div class="do"><span class="eyebrow">✓ Do</span><ul><li>Overlay everything with <code>position: fixed</code></li><li>Design portrait <i>and</i> landscape</li><li>Portal pop-ups out of filtered/transformed parents</li></ul></div>
+    <div class="dont"><span class="eyebrow">× Don't</span><ul><li>Navigate to a separate "game page"</li><li>Push the board around with headers or banners</li><li>Detect "mobile" by width alone; use <code>pointer: coarse</code></li></ul></div>
+  </div>
+</section>
+
+<!-- MOTION -->
+<section id="motion" data-toc="Motion" data-n="06">
+  <span class="eyebrow">Space &amp; time</span>
+  <h2 class="sec"><span class="n">06</span>Motion</h2>
+  <div class="rule"><span class="eyebrow">The rule</span><p>Short, ease-out, spatial. Things fade while sliding a few pixels toward the edge they belong to. Only "attention needed" states loop.</p></div>
+  <div class="why"><span class="eyebrow">Why</span><p>Motion tells you <i>where</i> something went, so you know where to find it again. Anything longer or bouncier would be decoration, and decoration is a distraction.</p></div>
+
+  <h3>Durations</h3>
+  <div class="demo">
+    <span class="eyebrow demo-label">Try it</span>
+    <div class="ruler" id="ruler"></div>
+    <div class="demo-controls"><button class="btn-ghost" id="rulerPlay"><span data-icon="play" data-size="14"></span>Play all</button><span class="meta">Easing: <code>ease-out</code> everywhere · <code>ease-in-out</code> only for loops</span></div>
+  </div>
+
+  <h3>Entrances</h3>
+  <div class="demo halftone-bg">
+    <span class="eyebrow demo-label">Try it</span>
+    <div class="row" style="justify-content:center;gap:24px">
+      <div class="anim-target card" id="animTarget">tile</div>
+      <div class="cell" id="hintTarget" style="--cell-size:56px;font-size:24px;border-radius:4px">7</div>
+    </div>
+    <div class="demo-controls" style="justify-content:center">
+      <button class="btn-ghost" data-anim="anim-fade-in">fade-in · 300</button>
+      <button class="btn-ghost" data-anim="anim-scale-in">scale-in · 200</button>
+      <button class="btn-ghost" data-anim="anim-slide-up">slide-up · 300</button>
+      <button class="btn-ghost" id="hintPlay">hint-pulse · 800</button>
+    </div>
+  </div>
+
+  <h3>Loops that stay in step</h3>
+  <p>When many cells pulse at once, they must pulse <b>in phase</b>, or the board shimmers. Zudoku gives every error a huge negative delay, so all instances share one timeline, whenever they appeared:</p>
+  <pre><code>.cell--error { animation: error-pulse 2s ease-in-out infinite; animation-delay: -10000s; }</code></pre>
+  <div class="demo">
+    <span class="eyebrow demo-label">Try it</span>
+    <div class="pulse-rows">
+      <div><div class="lbl">With <code>animation-delay: -10000s</code> (in phase)</div><div class="cells" id="pulseSync"></div></div>
+      <div><div class="lbl">Without (each starts when it appears)</div><div class="cells" id="pulseRaw"></div></div>
+    </div>
+    <div class="demo-controls"><button class="btn-ghost" id="pulseGo">Mark conflicts one by one</button><button class="icon-button" id="pulseReset" aria-label="Reset"><span data-icon="refresh"></span></button></div>
+  </div>
+
+  <h3>Direct manipulation</h3>
+  <p>While a finger drives something (swipe, dial), it follows with <b>no transition</b>. On release it animates to rest in 200 ms. Deleted list items slide out, <i>then</i> collapse their height, so the list closes the gap smoothly.</p>
+
+  <div class="dd">
+    <div class="do"><span class="eyebrow">✓ Do</span><ul><li>Hide with <code>opacity-0 + translate toward edge + pointer-events-none</code></li><li>Stagger group entrances by 100 ms</li><li>Honor <code>prefers-reduced-motion</code></li></ul></div>
+    <div class="dont"><span class="eyebrow">× Don't</span><ul><li>Springs, overshoot, wiggle</li><li>Confetti or particle celebrations</li><li>Animate the board's blur outside the screen transition</li></ul></div>
+  </div>
+</section>
+
+<!-- ============================== PART III ============================== -->
+<div class="part-head" id="part-3" data-part="Part III · Behavior">
+  <span class="eyebrow">Part III</span>
+  <h2>Behavior</h2>
+  <p class="lede">How the player acts, and how the game answers.</p>
+</div>
+
+<!-- INTERACTION -->
+<section id="interaction" data-toc="Interaction" data-n="07">
+  <span class="eyebrow">Behavior</span>
+  <h2 class="sec"><span class="n">07</span>Interaction</h2>
+  <div class="rule"><span class="eyebrow">The rule</span><p>Design for the thumb first, with gestures where they beat buttons. Every gesture has a mouse and keyboard twin.</p></div>
+  <div class="why"><span class="eyebrow">Why</span><p>A keypad covering half the screen is a distraction too. Gestures keep the board visible, and twins keep the game fully playable at a desk.</p></div>
+
+  <h3>The radial dial</h3>
+  <p>The signature input. Hold a cell, drag toward a value, release. <b>How far</b> you drag decides <b>what kind</b> of action happens.</p>
+  <div class="demo halftone-bg">
+    <span class="eyebrow demo-label">Try it: press, hold, drag, release (works with a mouse)</span>
+    <div class="dial-demo">
+      <div>
+        <div class="board dial-board" id="dialBoard"></div>
+        <div class="dial-status" id="dialStatus">&nbsp;</div>
+      </div>
+      <div class="legend">
+        <div><span class="dot">⏱</span><span><b>Hold 300 ms</b> on an empty cell → the dial opens at your finger.</span></div>
+        <div><span class="dot" style="background:hsl(var(--accent));box-shadow:0 0 0 2px hsl(var(--foreground)/.3)">3</span><span><b>Aim</b> (40–55 px away): the item grows. Release = <b>toggle a note</b>.</span></div>
+        <div><span class="dot" style="background:hsl(var(--foreground));color:hsl(var(--background));border-color:transparent">3</span><span><b>Push through</b> (≥ 55 px): the item pops out and inverts. Release = <b>place the value</b>.</span></div>
+        <div><span class="dot">×</span><span><b>Stay in the center</b> → clear the cell.</span></div>
+        <div><span class="dot" style="background:hsl(var(--muted));color:hsl(var(--muted-foreground))">5</span><span>Impossible values are gray and <b>skipped</b>, so you can't aim at them.</span></div>
+        <div><span class="dot"><kbd style="border:0;padding:0;background:none">⌨</kbd></span><span>Twin: click a cell, type <kbd>1</kbd>–<kbd>9</kbd>; <kbd>Shift</kbd>+digit = note; <kbd>⌫</kbd> clears.</span></div>
+      </div>
+    </div>
+  </div>
+  <p>The two-distance idea (aim = soft action, push through = hard action) works in any game where a target has a primary and a secondary action.</p>
+
+  <h3>The long-press ladder</h3>
+  <p>Long-press is the izzardry "secondary action". The longer the hold, the more deliberate the action:</p>
+  <div class="demo">
+    <span class="eyebrow demo-label">Try it: hold the button</span>
+    <div class="center"><button class="btn-primary holdbtn" id="holdBtn">Hold me</button></div>
+    <div class="ladder-track" id="ladderTrack"><div class="fill" id="ladderFill"></div></div>
+    <div class="dial-status" id="holdStatus" style="text-align:center">&nbsp;</div>
+  </div>
+  <div class="tbl-wrap"><table class="tbl">
+    <tr><th>Hold</th><th>Action</th><th>Release</th></tr>
+    <tr><td><code>300 ms</code></td><td>Radial dial on a cell</td><td>commits the choice</td></tr>
+    <tr><td><code>500 ms</code></td><td>Options popover (e.g. "search for a hard code")</td><td>short press = normal action</td></tr>
+    <tr><td><code>1000 ms</code></td><td><b>Peek</b> at the full solution</td><td>hides it again</td></tr>
+    <tr><td><code>3000 ms</code></td><td>Easter egg</td><td></td></tr>
+  </table></div>
+  <p>A long press must <b>swallow the click</b> that follows it, cancel on leave/cancel, and be announced in the <code>aria-label</code>: <i>"Get hint (hold for full reveal)"</i>.</p>
+
+  <h3>More gestures</h3>
+  <div class="tbl-wrap"><table class="tbl">
+    <tr><th>Gesture</th><th>Spec</th><th>Twin</th></tr>
+    <tr><td>Tap background</td><td>Toggles all in-game chrome</td><td>Click background</td></tr>
+    <tr><td>Swipe left on a list card</td><td>Direction lock after 8 px; delete past 40% width</td><td>Hover reveals ×</td></tr>
+    <tr><td>Press</td><td><code>active:scale-95</code> on everything pressable</td><td></td></tr>
+    <tr><td>Keys</td><td>Read <code>e.code</code> (<code>Digit3</code>), not <code>e.key</code>, so <kbd>Shift</kbd>+<kbd>3</kbd> works on every layout</td><td></td></tr>
+  </table></div>
+</section>
+
+<!-- FEEDBACK -->
+<section id="feedback" data-toc="Feedback & states" data-n="08">
+  <span class="eyebrow">Behavior</span>
+  <h2 class="sec"><span class="n">08</span>Feedback &amp; states</h2>
+  <div class="rule"><span class="eyebrow">The rule</span><p>Be forgiving and quiet. Undo everything, never ask "are you sure?", and show results by tinting the world rather than with fanfare.</p></div>
+  <div class="why"><span class="eyebrow">Why</span><p>Confirmation dialogs and loud celebrations interrupt flow. An immediate action plus an undo is both faster and safer.</p></div>
+
+  <h3>Cell states</h3>
+  <p>The most state-dense element. The same recipe works for tiles, cards and slots in other games.</p>
+  <div class="state-row" id="cellStates"></div>
+
+  <h3>End of game: tint the world</h3>
+  <div class="demo">
+    <span class="eyebrow demo-label">Try it</span>
+    <div class="tint-panel page-tint halftone-bg" id="tintPanel">
+      <div class="board" id="tintBoard"></div>
+      <div class="row" style="justify-content:center">
+        <button class="btn-ghost" data-tint="success">Solve correctly</button>
+        <button class="btn-ghost" data-tint="failure">Fill it wrong</button>
+        <button class="icon-button" data-tint="" aria-label="Reset"><span data-icon="refresh"></span></button>
+      </div>
+    </div>
+    <p class="demo-caption">The background fades over 1 s. A wrong board gets no modal: the tint <i>is</i> the message. A correct one then shows the celebration overlay: 🎉, title, one summary line, <b>Share</b> + <b>New Puzzle</b>.</p>
+  </div>
+
+  <h3>Undo, not "Are you sure?"</h3>
+  <div class="demo toast-demo" id="toastDemo">
+    <span class="eyebrow demo-label">Try it: delete a few (hover × or tap ×)</span>
+    <div class="list" id="toastList"></div>
+    <div class="toast-stack" id="toastStack"></div>
+  </div>
+  <p>Deletion is immediate; the toast lives 5 s and <b>every new deletion restarts the timer</b> for the whole stack. From two pending, an <b>Undo All</b> pill appears.</p>
+
+  <h3>Long work</h3>
+  <ul>
+    <li>The spinner replaces the icon that started the work, <i>in place</i>. There is no separate spinner area.</li>
+    <li>A tooltip shows real numbers (<code>Tried: 312 seeds</code>), and tapping the spinner <b>cancels and restores</b>.</li>
+    <li>Heavy work runs in Web Workers. The UI never freezes.</li>
+  </ul>
+
+  <h3>Helpers: one switch</h3>
+  <p>All "helpful but spoiler-ish" assistance (conflict highlighting, disabling impossible values, auto-hiding dead notes) sits behind <b>one</b> toggle (<span data-icon="shield-check" data-size="14"></span> / <span data-icon="shield-off" data-size="14"></span>), <b>on by default</b>. Purists switch it off; nobody configures five settings.</p>
+</section>
+
+<!-- COMPONENTS -->
+<section id="components" data-toc="Components" data-n="09">
+  <span class="eyebrow">Behavior</span>
+  <h2 class="sec"><span class="n">09</span>Components</h2>
+  <div class="rule"><span class="eyebrow">The rule</span><p>Three button kinds, one toolbar, one stats pill. Reuse the recipes; don't invent new shapes.</p></div>
+  <div class="gallery">
+    <div><span class="eyebrow">Primary · .btn-primary</span><button class="btn-primary">Start</button><span class="spec-line">One per screen, max. Filled foreground pill.</span></div>
+    <div><span class="eyebrow">Ghost · .btn-ghost</span><button class="btn-ghost"><span data-icon="share" data-size="16"></span>Share</button><span class="spec-line">Secondary action beside a primary.</span></div>
+    <div><span class="eyebrow">Icon · .icon-button</span><div class="row"><button class="icon-button" aria-label="Undo"><span data-icon="undo"></span></button><button class="icon-button" aria-label="Redo" disabled><span data-icon="redo"></span></button><button class="icon-button" aria-label="Hint"><span data-icon="lightbulb"></span></button></div><span class="spec-line">20 px icon, always aria-labelled; disabled at 30%.</span></div>
+    <div><span class="eyebrow">Round · .fab / .pill-sm</span><div class="row"><button class="fab" aria-label="Help"><span data-icon="help"></span></button><button class="fab" aria-label="Language" style="font-size:18px">🇬🇧</button><button class="pill-sm"><span data-icon="download"></span>Install App</button></div><span class="spec-line">Corner buttons are glass circles; low-priority offers are small pills.</span></div>
+    <div class="span2"><span class="eyebrow">Toolbar · .glass .chrome-bar</span><div class="glass chrome-bar"><button class="icon-button" aria-label="Undo"><span data-icon="undo"></span></button><button class="icon-button" aria-label="Redo" disabled><span data-icon="redo"></span></button><span class="chrome-divider"></span><button class="icon-button" aria-label="Hint"><span data-icon="lightbulb"></span></button><button class="icon-button" aria-label="Helpers"><span data-icon="shield-check"></span></button><button class="icon-button" aria-label="Share"><span data-icon="share"></span></button></div><span class="spec-line">Order: history │ assist, out. ≤ 6 buttons. Vertical rail in landscape.</span></div>
+    <div><span class="eyebrow">Stats pill · .chrome-panel</span><div class="glass chrome-panel"><div><div class="eyebrow">Board</div><div class="stat-value">IZZARD</div></div><span class="chrome-divider"></span><div><div class="eyebrow">Level</div><div class="stat-value">5</div></div><span class="chrome-divider"></span><div><div class="eyebrow">Time</div><div class="stat-value">4:12</div></div></div><span class="spec-line">≤ 3 stats, eyebrow over value.</span></div>
+    <div><span class="eyebrow">Code selector</span><div class="codesel" id="codeSel"></div><span class="whisper" style="margin-top:-4px">board code</span><span class="spec-line">Tap the code → new random one. ✎ → edit (A–Z, 0–9, ≤ 8).</span></div>
+    <div><span class="eyebrow">Stepper</span><div class="stepper" id="stepper"></div><span class="spec-line">For ordered values. Fixed-width middle so chevrons never jump.</span></div>
+    <div><span class="eyebrow">Toast</span><div class="toast" style="width:100%;max-width:340px;box-sizing:border-box"><span><span style="letter-spacing:var(--tracking-wider)">M00NLT</span> <span class="muted">removed</span></span><span class="row" style="gap:4px"><button class="toast-action">Undo</button><button class="icon-button" style="padding:4px" aria-label="Dismiss"><span data-icon="x" data-size="14"></span></button></span></div><span class="spec-line">Subject in mono, verb muted, inverted Undo.</span></div>
+    <div><span class="eyebrow">List card · .list-card</span><div class="list-card" style="width:100%;max-width:340px;box-sizing:border-box;display:flex;gap:14px;align-items:center"><div class="board" id="cardThumb" style="--cell-size:5px;padding:1px;box-shadow:none;border-radius:2px;gap:0"></div><div style="flex:1"><div class="row" style="justify-content:space-between"><span style="font-size:1.125rem;letter-spacing:var(--tracking-wider)">K7QW2M</span><span class="meta">10:31 PM</span></div><div class="row" style="justify-content:space-between;margin-top:4px"><span class="overline" style="font-size:12px">Lv.3 Easy</span><span class="meta">4:12 <span style="color:hsl(var(--success))">✓</span></span></div></div></div><span class="spec-line">Thumbnail, code, level, when, elapsed, ✓.</span></div>
+    <div><span class="eyebrow">Tutorial bubble · .bubble</span><div class="bubble"><div class="row" style="gap:8px;align-items:flex-start;flex-wrap:nowrap"><span data-icon="arrow-left" data-size="16" style="color:hsl(var(--primary))"></span><div><div style="font-size:12px;font-weight:500">Exit Game</div><div class="muted" style="font-size:10px">Progress saves automatically</div></div></div></div><span class="spec-line">Title + one line, real icon, ≤ 200 px.</span></div>
+    <div><span class="eyebrow">Dialog (rare)</span><div class="dialog-mock"><div class="disc"><span data-icon="coffee" data-size="22"></span></div><h5>Did you enjoy your first round?</h5><p>If you'd like to support me as an independent developer building apps without distractions (or ads), you might want to…</p><a class="bmc" href="#respect">☕ Buy me a coffee</a><button class="link-whisper">maybe another time</button></div></div>
+  </div>
+</section>
+
+<!-- ============================== PART IV ============================== -->
+<div class="part-head" id="part-4" data-part="Part IV · Words & systems">
+  <span class="eyebrow">Part IV</span>
+  <h2>Words &amp; systems</h2>
+  <p class="lede">The voice, the data model, the platform, and the relationship with the player.</p>
+</div>
+
+<!-- VOICE -->
+<section id="voice" data-toc="Voice & i18n" data-n="10">
+  <span class="eyebrow">Words &amp; systems</span>
+  <h2 class="sec"><span class="n">10</span>Voice &amp; i18n</h2>
+  <div class="rule"><span class="eyebrow">The rule</span><p>Calm, brief, friendly, a little personal. Use the fewest words that work, and exclamation marks only for success.</p></div>
+  <div class="tbl-wrap"><table class="tbl">
+    <tr><th style="color:hsl(var(--success))">✓ Say</th><th style="color:hsl(var(--destructive))">× Not</th></tr>
+    <tr><td>Progress saves automatically</td><td class="muted">Don't worry! Your progress is safely stored in your browser's local storage.</td></tr>
+    <tr><td>Same code = same puzzle</td><td class="muted">Puzzles are generated deterministically from the seed.</td></tr>
+    <tr><td>Sudoku Complete!</td><td class="muted">AMAZING!!! You're a genius! 🔥🔥🔥</td></tr>
+    <tr><td>M00NLT removed · Undo</td><td class="muted">Are you sure? This cannot be undone.</td></tr>
+    <tr><td>maybe another time</td><td class="muted">No thanks, I don't like supporting indie devs</td></tr>
+  </table></div>
+
+  <h3>Patterns</h3>
+  <div class="tbl-wrap"><table class="tbl">
+    <tr><th>Pattern</th><th>Example</th></tr>
+    <tr><td>Summary line</td><td><code>Board: IZZARD • Level 5 • 0:09</code></td></tr>
+    <tr><td>Compact level / limit</td><td><code>Lv.10 Expert</code> · <code>Level 5 / 10</code></td></tr>
+    <tr><td>Hidden gesture in aria</td><td><code>Get hint (hold for full reveal)</code></td></tr>
+    <tr><td>Tutorial pair</td><td><b>Exit Game</b> / Progress saves automatically</td></tr>
+    <tr><td>Tagline formula</td><td><code>Zero Distractions. Just &lt;Game&gt;.</code> (never translated)</td></tr>
+  </table></div>
+
+  <h3>The difficulty ladder</h3>
+  <p>Twelve single-word levels, default <b>5</b>. Reuse them in every game that has difficulty.</p>
+  <div class="tbl-wrap"><table class="tbl" id="ladderTbl"><tr><th>#</th><th>EN</th><th>DE</th><th>FR</th><th>ES</th></tr></table></div>
+
+  <h3>Languages</h3>
+  <p><b>EN, DE (du), FR (vous), ES (tú)</b> are the baseline. Use a tiny in-house <code>t(key, params)</code> where English is the source and the type, and translate aria-labels too. The initial language comes from the stored choice, then <code>navigator.language</code>, then English. Brand strings (wordmark, tagline) are never translated.</p>
+</section>
+
+<!-- SYSTEMS -->
+<section id="systems" data-toc="Codes, URL & platform" data-n="11">
+  <span class="eyebrow">Words &amp; systems</span>
+  <h2 class="sec"><span class="n">11</span>Codes, URL &amp; platform</h2>
+  <div class="rule"><span class="eyebrow">The rule</span><p>Every puzzle comes from a short uppercase code. The URL holds the whole game, and the app is an installable, offline PWA on static hosting.</p></div>
+  <div class="why"><span class="eyebrow">Why</span><p>Same code means the same puzzle for everyone, forever, which makes sharing, replaying and comparing trivial. If the URL is the save, a reload or a link never loses anything, and no server or account is needed.</p></div>
+
+  <h3>Anatomy of a game URL</h3>
+  <div class="url" id="url"></div>
+  <div class="url-explain" id="urlExplain">Hover or tap a part.</div>
+
+  <h3>Board codes</h3>
+  <div class="tbl-wrap"><table class="tbl">
+    <tr><td>Alphabet</td><td><code>0–9 A–Z</code>, uppercase</td></tr>
+    <tr><td>Length</td><td>6 generated · 1–8 typed (names welcome)</td></tr>
+    <tr><td>Identity</td><td><code>code + level</code> = one game</td></tr>
+    <tr><td>Generation</td><td>seeded PRNG only (never <code>Math.random()</code> inside)</td></tr>
+    <tr><td>User-facing name</td><td>"board code" (never "seed")</td></tr>
+  </table></div>
+
+  <h3>Saving</h3>
+  <ul>
+    <li>Autosave on <b>every</b> move; keep the last 100 games.</li>
+    <li>Resuming only bumps "last played" after a change or 15 s, so just peeking doesn't reorder history.</li>
+    <li>Storage keys: <code>&lt;game&gt;:&lt;key&gt;</code> (e.g. <code>zudoku:helpers</code>), every read in <code>try/catch</code>.</li>
+  </ul>
+
+  <h3>Platform</h3>
+  <div class="tbl-wrap"><table class="tbl">
+    <tr><th>Concern</th><th>Standard</th></tr>
+    <tr><td>Hosting</td><td>GitHub Pages via Actions · <code>base: "./"</code> · <code>HashRouter</code></td></tr>
+    <tr><td>PWA</td><td><code>vite-plugin-pwa</code>, autoUpdate, HTML network-first (3 s), <code>orientation: any</code></td></tr>
+    <tr><td>Updates</td><td>Hourly check · toast "A new version is available" + <b>Reload</b></td></tr>
+    <tr><td>Version stamp</td><td><code class="micro" style="font-size:11px;color:hsl(var(--muted-foreground)/.5)">2026-02-15 16:15:09 (717c4d3)</code> bottom-right, start screen only; tap = copy + check update</td></tr>
+    <tr><td>Install</td><td>Bottom sheet once · then a small "Install App" pill</td></tr>
+    <tr><td>Icons</td><td>Real PNGs: 192, 512, 512 maskable · grayscale</td></tr>
+  </table></div>
+
+  <h3>Icon &amp; social image: where we're heading</h3>
+  <div class="refimg">
+    <figure style="margin:0"><img src="assets/reference/zudoku-app-icon.jpg" alt="Current Zudoku icon" style="max-width:180px;display:block;margin:0 auto" /><figcaption class="demo-caption" style="text-align:center">Current icon: cream + slate, off-palette.</figcaption></figure>
+    <figure style="margin:0"><img src="assets/reference/zudoku-og-image.png" alt="Current OG image" /><figcaption class="demo-caption" style="text-align:center">Current OG image: navy + Courier, off-palette.</figcaption></figure>
+  </div>
+  <p><b>Target:</b> grayscale. Use <code>#0d0d0d</code> or <code>#fafafa</code>, the board motif in thin strokes, the brand mono wordmark at weight 300 with 0.3em tracking, and the halftone texture. Every izzardry icon shares one frame and stroke weight and differs only in motif. Ideally the OG image shows the <b>blurred board</b>, the most recognizable izzardry picture.</p>
+</section>
+
+<!-- RESPECT -->
+<section id="respect" data-toc="Respect: money & onboarding" data-n="12">
+  <span class="eyebrow">Words &amp; systems</span>
+  <h2 class="sec"><span class="n">12</span>Respect: money &amp; onboarding</h2>
+  <div class="rule"><span class="eyebrow">The rule</span><p>Free, ad-free, account-free. Ask for support once, gently, after the player has had a good time. Teach once, in place, and get out of the way.</p></div>
+
+  <h3>The donation ask</h3>
+  <div class="timeline">
+    <div class="fill"><b>First win</b><span>celebration overlay</span></div>
+    <div><b>+1.5 s</b><span>let it land</span></div>
+    <div class="fill"><b>Ask once</b><span>dialog, personal "me"</span></div>
+    <div><b>Never again</b><span>only a quiet button at the bottom of history</span></div>
+  </div>
+  <div class="dd">
+    <div class="do"><span class="eyebrow">✓ Do</span><ul><li>"maybe another time" as a lowercase whisper link</li><li>Keep a support button at the end of the scroll area</li><li>Hide one small easter egg (Zudoku: hold help for 3 s)</li></ul></div>
+    <div class="dont"><span class="eyebrow">× Don't</span><ul><li>Ads, paywalls, "remove ads" upsells, tracking</li><li>Ask on launch, ask repeatedly, guilt-trip</li><li>Show it during a game</li></ul></div>
+  </div>
+
+  <h3>Onboarding: one overlay of coach marks</h3>
+  <div class="dial-demo">
+    <img src="assets/screenshots/03-tutorial-mobile.png" alt="Tutorial overlay" style="width:220px;border-radius:14px;border:1px solid hsl(var(--border));box-shadow:var(--shadow-md);margin:0 auto;display:block" />
+    <ul>
+      <li>Appears automatically <b>the first time a game starts</b>, and again on <span data-icon="help" data-size="14"></span>.</li>
+      <li>Bubbles sit <b>next to the thing they explain</b>, over the live game (soft scrim, 2 px blur).</li>
+      <li>They enter staggered by 100 ms; <b>tap anywhere</b> to dismiss.</li>
+      <li>Illustrations are built from real UI pieces (a mini dial, a mini note cell), not images.</li>
+      <li>The overlay is device-aware: touch devices get the gesture, pointer devices get the keys.</li>
+      <li>About 6 bubbles, about 8 words per line, each with its real icon.</li>
+    </ul>
+  </div>
+
+  <h3>Accessibility essentials</h3>
+  <ul>
+    <li>Every icon button has a translated <code>aria-label</code>, including hidden gestures.</li>
+    <li>Brand focus ring (<code>2px solid ring</code>), never the blue default.</li>
+    <li>State is never color-only: conflict = red <i>and</i> ring <i>and</i> pulse; solved = green <i>and</i> ✓.</li>
+    <li><code>prefers-reduced-motion</code> drops slides, blurs and loops.</li>
+    <li>Touch targets are at least 44 px on coarse pointers.</li>
+  </ul>
+</section>
+
+<!-- ============================== PART V ============================== -->
+<div class="part-head" id="part-5" data-part="Part V · Use it">
+  <span class="eyebrow">Part V</span>
+  <h2>Use it</h2>
+  <p class="lede">Drop the tokens into a new game, check it against the list, and see what's left to fix in Zudoku.</p>
+</div>
+
+<section id="start" data-toc="Get started" data-n="13">
+  <span class="eyebrow">Use it</span>
+  <h2 class="sec"><span class="n">13</span>Get started</h2>
+  <div class="tbl-wrap"><table class="tbl">
+    <tr><th>File</th><th>Use it when</th></tr>
+    <tr><td><a href="tokens/ztyle.css"><code>tokens/ztyle.css</code></a></td><td>Any web project. Plain CSS: variables, base, components. This page uses only this file.</td></tr>
+    <tr><td><a href="tokens/tailwind.preset.ts"><code>tokens/tailwind.preset.ts</code></a></td><td>Tailwind 3 (the reference stack), together with <code>ztyle.css</code>.</td></tr>
+    <tr><td><a href="tokens/ztyle.tokens.json"><code>tokens/ztyle.tokens.json</code></a></td><td>Native, game engines, design tools.</td></tr>
+    <tr><td><a href="docs/"><code>docs/</code></a></td><td>The full written reference, one chapter per topic.</td></tr>
+  </table></div>
+<pre><code>// tailwind.config.ts
+import ztyle from "./ztyle/tokens/tailwind.preset";
+export default { presets: [ztyle], content: ["./index.html", "./src/**/*.{ts,tsx}"] };
+
+/* src/index.css */
+@import "./ztyle/tokens/ztyle.css";
+@tailwind base; @tailwind components; @tailwind utilities;
+
+&lt;!-- index.html --&gt;
+&lt;body class="halftone-bg"&gt;</code></pre>
+  <p>Reference stack: React 18 + TypeScript, Vite (SWC), Tailwind 3 + tailwindcss-animate, shadcn/Radix (only what you use), lucide, sonner, vite-plugin-pwa, Vitest, GitHub Pages. Keep the engine pure (<code>lib/&lt;game&gt;.ts</code>), heavy work in workers, and the component names shared across games.</p>
+</section>
+
+<section id="checklist" data-toc="Launch checklist" data-n="14">
+  <span class="eyebrow">Use it</span>
+  <h2 class="sec"><span class="n">14</span>Launch checklist</h2>
+  <p class="lede">Go/no-go for a new izzardry game. Ticks are remembered in this browser only.</p>
+  <div class="progress"><i id="checkBar"></i></div>
+  <div class="row" style="justify-content:space-between"><span class="meta" id="checkCount"></span><button class="link-whisper" style="margin:0" id="checkReset">reset</button></div>
+  <div id="checklistBox"></div>
+</section>
+
+<section id="audit" data-toc="Zudoku audit" data-n="15">
+  <span class="eyebrow">Use it</span>
+  <h2 class="sec"><span class="n">15</span>Zudoku audit</h2>
+  <p class="lede">Where the reference game (<code>717c4d3</code>) departs from this guide. Full list: <a href="docs/90-zudoku-audit.md">docs/90</a>.</p>
+  <div class="tbl-wrap"><table class="tbl">
+    <tr><th>#</th><th>Issue</th><th>Fix</th></tr>
+    <tr><td>1</td><td>No font shipped; only looks right with Fira Code installed</td><td>Bundle woff2</td></tr>
+    <tr><td>2</td><td><code>font-mono</code> ≠ body stack: two mono faces</td><td>Ztyle preset</td></tr>
+    <tr><td>3</td><td>Dark tokens exist but never activate</td><td>Follow system</td></tr>
+    <tr><td>4</td><td>theme-color <code>#fafafa</code> vs manifest <code>#0a0a0a</code></td><td>Per-scheme metas, <code>#0d0d0d</code></td></tr>
+    <tr><td>5</td><td>Icon &amp; OG image off-palette; "PNGs" are JPEGs</td><td>Regenerate grayscale, real PNGs</td></tr>
+    <tr><td>6</td><td>Blue default focus outline on cells</td><td>Brand focus ring</td></tr>
+    <tr><td>7</td><td>Cell fills for related/selected/conflict never render (<code>bg-card</code> utility beats the component layer)</td><td>Layer fills over the card</td></tr>
+    <tr><td>8</td><td>Donation dialog: black scrim, square sheet on mobile</td><td>Blurred scrim, rounded card</td></tr>
+    <tr><td>9</td><td>Install prompt uses <code>rounded-xl</code> buttons</td><td>Pills</td></tr>
+    <tr><td>10</td><td>Undo-toast × does nothing</td><td>Dismiss / commit</td></tr>
+    <tr><td>11</td><td>Mixed storage keys (<code>seedoku_games</code>, …)</td><td><code>zudoku:&lt;key&gt;</code> + migration</td></tr>
+    <tr><td>12</td><td>Some English strings bypass i18n; <code>&lt;html lang&gt;</code> fixed</td><td>Move to table; set lang</td></tr>
+    <tr><td>13</td><td>No reduced-motion, no arrow keys, 36 px targets</td><td>See accessibility</td></tr>
+  </table></div>
+</section>
+
+<section id="decisions" data-toc="Open decisions" data-n="16">
+  <span class="eyebrow">Use it</span>
+  <h2 class="sec"><span class="n">16</span>Open decisions</h2>
+  <p class="lede">Calls the owner still needs to make. Until then, the guide uses the default marked ★.</p>
+  <div class="grid-2">
+    <div class="dd" style="margin:0;grid-template-columns:1fr"><div><span class="eyebrow" style="display:block;margin-bottom:6px">Typeface</span><p>★ Self-host Fira Code (what Zudoku looks like on the creator's machine), or pick JetBrains Mono.</p></div></div>
+    <div class="dd" style="margin:0;grid-template-columns:1fr"><div><span class="eyebrow" style="display:block;margin-bottom:6px">Icon language</span><p>★ Grayscale family. Is the sprout glyph an izzardry mark to keep in every icon?</p></div></div>
+    <div class="dd" style="margin:0;grid-template-columns:1fr"><div><span class="eyebrow" style="display:block;margin-bottom:6px">Dark mode</span><p>★ Follow the system. Optionally add a manual toggle on the start screen only.</p></div></div>
+    <div class="dd" style="margin:0;grid-template-columns:1fr"><div><span class="eyebrow" style="display:block;margin-bottom:6px">Z-naming</span><p>★ Swap the first letter for Z (Zudoku, Ztyle…) as the default naming pattern.</p></div></div>
+  </div>
+</section>
+
+  </main>
+</div>
+
+<footer>
+  <div class="wordmark">ZTYLE</div>
+  <p class="tagline" style="margin:6px 0 0">Zero Distractions. Just Games.</p>
+  <p class="micro" style="margin-top:20px;font-size:10px;color:hsl(var(--muted-foreground)/.5)">an izzardry style guide · extracted from Zudoku 717c4d3</p>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ------------------------------------------------------------ icons (lucide) */
+  var I = {
+    'arrow-left': '<path d="m12 19-7-7 7-7"/><path d="M19 12H5"/>',
+    'undo': '<path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11"/>',
+    'redo': '<path d="m15 14 5-5-5-5"/><path d="M20 9H9.5A5.5 5.5 0 0 0 4 14.5A5.5 5.5 0 0 0 9.5 20H13"/>',
+    'lightbulb': '<path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/>',
+    'shield-check': '<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/>',
+    'shield-off': '<path d="m2 2 20 20"/><path d="M5 5a1 1 0 0 0-1 1v7c0 5 3.5 7.5 7.67 8.94a1 1 0 0 0 .67.01c2.35-.82 4.48-1.97 5.9-3.71"/><path d="M9.309 3.652A12.252 12.252 0 0 0 11.24 2.28a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1v7a9.784 9.784 0 0 1-.08 1.264"/>',
+    'share': '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/>',
+    'help': '<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>',
+    'refresh': '<path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/>',
+    'loader': '<path d="M21 12a9 9 0 1 1-6.219-8.56"/>',
+    'pencil': '<path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/>',
+    'check': '<path d="M20 6 9 17l-5-5"/>',
+    'chevron-left': '<path d="m15 18-6-6 6-6"/>',
+    'chevron-right': '<path d="m9 18 6-6-6-6"/>',
+    'chevron-down': '<path d="m6 9 6 6 6-6"/>',
+    'chevron-up': '<path d="m18 15-6-6-6 6"/>',
+    'x': '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+    'download': '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/>',
+    'sticky-note': '<path d="M16 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8Z"/><path d="M15 3v4a2 2 0 0 0 2 2h4"/>',
+    'eye-off': '<path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"/><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/><path d="m2 2 20 20"/>',
+    'coffee': '<path d="M10 2v2"/><path d="M14 2v2"/><path d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1"/><path d="M6 2v2"/>',
+    'sun': '<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>',
+    'moon': '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
+    'monitor': '<rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/>',
+    'menu': '<line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/>',
+    'play': '<polygon points="6 3 20 12 6 21 6 3"/>'
+  };
+  function svg(name, size) {
+    size = size || 20;
+    return '<svg xmlns="http://www.w3.org/2000/svg" width="' + size + '" height="' + size + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:block">' + (I[name] || '') + '</svg>';
+  }
+  function hydrate(root) {
+    (root || document).querySelectorAll('[data-icon]').forEach(function (el) {
+      el.innerHTML = svg(el.dataset.icon, +(el.dataset.size || 20));
+      if (el.tagName === 'SPAN') el.style.display = 'inline-flex';
+      if (el.tagName === 'SPAN') el.style.verticalAlign = 'middle';
+    });
+  }
+  function $(id) { return document.getElementById(id); }
+  function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
+
+  /* ------------------------------------------------------------ theme */
+  var themeOrder = ['auto', 'light', 'dark'];
+  var themeIcon = { auto: 'monitor', light: 'sun', dark: 'moon' };
+  var mq = window.matchMedia('(prefers-color-scheme: dark)');
+  function applyTheme(pref) {
+    var dark = pref === 'dark' || (pref === 'auto' && mq.matches);
+    document.documentElement.classList.toggle('dark', dark);
+    document.documentElement.dataset.themePref = pref;
+    $('themeLabel').textContent = pref;
+    $('themeBtn').innerHTML = svg(themeIcon[pref]);
+    $('themeBtn').setAttribute('aria-label', 'Theme: ' + pref + ' (click to change)');
+  }
+  applyTheme(document.documentElement.dataset.themePref || 'auto');
+  $('themeBtn').addEventListener('click', function () {
+    var cur = document.documentElement.dataset.themePref || 'auto';
+    var next = themeOrder[(themeOrder.indexOf(cur) + 1) % 3];
+    store('ztyle:theme', next); applyTheme(next);
+  });
+  mq.addEventListener && mq.addEventListener('change', function () { applyTheme(document.documentElement.dataset.themePref || 'auto'); });
+
+  /* ------------------------------------------------------------ TOC + sheet + topbar */
+  var tocHTML = '', sheetHTML = '';
+  document.querySelectorAll('main > section[data-toc], main > .part-head').forEach(function (el) {
+    if (el.dataset.part) {
+      tocHTML += '<div class="part eyebrow">' + el.dataset.part + '</div>';
+      sheetHTML += '<div class="part eyebrow">' + el.dataset.part + '</div>';
+    } else {
+      var a = '<a href="#' + el.id + '" data-target="' + el.id + '"><span class="n">' + el.dataset.n + '</span>' + el.dataset.toc + '</a>';
+      tocHTML += a; sheetHTML += a;
+    }
+  });
+  $('toc').innerHTML = tocHTML;
+  $('sheetNav').innerHTML = sheetHTML;
+  $('menuBtn').addEventListener('click', function () { $('sheet').hidden = false; document.body.style.overflow = 'hidden'; });
+  function closeSheet() { $('sheet').hidden = true; document.body.style.overflow = ''; }
+  $('sheetClose').addEventListener('click', closeSheet);
+  $('sheetNav').addEventListener('click', function (e) { if (e.target.closest('a')) closeSheet(); });
+
+  var tocLinks = $('toc').querySelectorAll('a');
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (en.isIntersecting) {
+        tocLinks.forEach(function (a) { a.classList.toggle('active', a.dataset.target === en.target.id); });
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  document.querySelectorAll('main > section[data-toc]').forEach(function (s) { io.observe(s); });
+
+  function onScroll() { $('topbar').classList.toggle('is-away', window.scrollY < window.innerHeight * 0.6); }
+  window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+  /* ------------------------------------------------------------ boards */
+  var SOL = '534678912672195348198342567859761423426853791713924856961537284287419635345286179';
+  var PUZ = '53..7....6..195....98....6.8...6...34..8.3..17...2...6.6....28....419..5....8..79';
+  function buildBoard(el, opts) {
+    opts = opts || {};
+    el.style.gridTemplateColumns = 'repeat(9, var(--cell-size))';
+    var html = '';
+    for (var i = 0; i < 81; i++) {
+      var r = Math.floor(i / 9), c = i % 9, g = PUZ[i] !== '.';
+      var cls = 'cell';
+      if (c === 2 || c === 5) cls += ' cell--group-end-x';
+      if (r === 2 || r === 5) cls += ' cell--group-end-y';
+      var v = '';
+      if (g) { cls += ' cell--given'; v = PUZ[i]; }
+      else if (opts.player && opts.player.indexOf(i) >= 0) { cls += ' cell--player'; v = SOL[i]; }
+      if (opts.tiny) v = '';
+      if (opts.selected !== undefined) {
+        var sr = Math.floor(opts.selected / 9), sc = opts.selected % 9;
+        if (i === opts.selected) cls += ' cell--selected';
+        else if (r === sr || c === sc || (Math.floor(r / 3) === Math.floor(sr / 3) && Math.floor(c / 3) === Math.floor(sc / 3))) cls += ' cell--related';
+      }
+      if (opts.error === i) { cls += ' cell--error'; v = '7'; }
+      html += '<div class="' + cls + '">' + v + '</div>';
+    }
+    el.innerHTML = html;
+  }
+  buildBoard($('heroBoard'));
+  buildBoard($('elevBoard'), { player: [2, 11, 20, 30, 44] });
+  buildBoard($('phBoard'), { player: [2, 11, 20, 30, 44, 57, 66], selected: 40 });
+  buildBoard($('cardThumb'), { tiny: true });
+
+  /* ------------------------------------------------------------ swatches */
+  var TOK = [
+    ['background', 'Page', '#fafafa', '#0d0d0d'], ['foreground', 'Ink, text', '#0d0d0d', '#f2f2f2'],
+    ['card', 'Raised, cells', '#ffffff', '#141414'], ['muted', 'Quiet fill', '#f5f5f5', '#1f1f1f'],
+    ['muted-foreground', 'Labels', '#737373', '#8c8c8c'], ['secondary', '', '#ebebeb', '#262626'],
+    ['accent', 'Hover, aim', '#e6e6e6', '#2e2e2e'], ['border', 'Hairlines', '#d9d9d9', '#333333'],
+    ['ring', 'Focus', '#0d0d0d', '#cccccc'], ['destructive', 'Broken', '#dc2828', '#cf3030'],
+    ['success', 'Done', '#16a249', '#22c35d']
+  ];
+  function swatches(el, idx) {
+    el.innerHTML = TOK.map(function (t) {
+      return '<div class="swatch"><div class="chip" style="background:hsl(var(--' + t[0] + '))"></div><div class="name">' + t[0] + '<span>' + t[1] + '</span></div><div class="val">' + t[idx] + '</div></div>';
+    }).join('');
+  }
+  swatches($('swLight'), 2); swatches($('swDark'), 3);
+
+  var LAD = [[3, 'halftone'], [5, 'related cells'], [6, 'dense dots'], [10, 'selected, frame'], [20, 'ghost border'], [30, 'dividers'], [50, 'notes, ring'], [70, 'icons at rest']];
+  $('ladder').innerHTML = LAD.map(function (l) {
+    var dots = l[0] <= 6 ? 'background-image:radial-gradient(circle, hsl(var(--foreground) / ' + (l[0] / 100) + ') 1px, transparent 1px);background-size:' + (l[0] === 6 ? 4 : 8) + 'px ' + (l[0] === 6 ? 4 : 8) + 'px' : 'background:hsl(var(--foreground) / ' + (l[0] / 100) + ')';
+    return '<div><i style="' + dots + '"></i><b>/' + l[0] + '</b><span>' + l[1] + '</span></div>';
+  }).join('');
+
+  function cellFig(cls, val, cap, style) {
+    return '<figure><div class="cell ' + cls + '" style="' + (style || '') + '">' + val + '</div><figcaption>' + cap + '</figcaption></figure>';
+  }
+  $('semanticRow').innerHTML =
+    cellFig('cell--error', '4', 'Conflict') +
+    cellFig('cell--group-done cell--given', '9', 'Group done') +
+    cellFig('', '<span style="color:hsl(var(--success));font-size:16px">✓</span>', 'Solved mark') +
+    cellFig('', '', 'Page tint ✓', 'background:hsl(var(--success)/.12)') +
+    cellFig('', '', 'Page tint ×', 'background:hsl(var(--destructive)/.12)');
+
+  $('cellStates').innerHTML =
+    cellFig('', '', 'Base') +
+    cellFig('cell--given', '5', 'Given · bold') +
+    cellFig('cell--player', '5', 'Player · ink 80%') +
+    cellFig('', '<span class="cell-note" style="top:2px;left:3px">1</span><span class="cell-note" style="top:2px;right:3px">4</span><span class="cell-note" style="bottom:2px;left:3px">7</span><span class="cell-note" style="top:2px;left:50%;transform:translateX(-50%)">9</span>', 'Notes · corners first') +
+    cellFig('cell--related', '', 'Related') +
+    cellFig('cell--selected', '', 'Selected') +
+    cellFig('cell--error', '3', 'Conflict · pulses') +
+    cellFig('cell--group-done cell--player', '2', 'Group done') +
+    cellFig('cell--hint', '8', 'Hinted · once', 'animation-iteration-count:infinite;animation-duration:1.6s');
+
+  /* ------------------------------------------------------------ type specs */
+  var SPECS = [
+    ['Wordmark', '300 · 0.3em · 30→36 px', '<span class="wordmark" style="padding-left:.3em">ZUDOKU</span>'],
+    ['Code display', '300 · widest · 24→36 px', '<span class="code-display">IZZARD</span>'],
+    ['Celebration', '700 · 24 px', '<span style="font-size:24px;font-weight:700">Sudoku Complete!</span>'],
+    ['Selector value', '500 · 18 px', '<span style="font-size:18px;font-weight:500">Medium</span>'],
+    ['Body · button', '400 · 14 px · buttons uppercase wider', '<span style="font-size:14px">Tap cell, then hold &amp; drag to a digit.</span>'],
+    ['Overline', '14 px · uppercase · wider · muted', '<span class="overline">Level 5 <span style="color:hsl(var(--muted-foreground)/.5)">/ 10</span></span>'],
+    ['Meta', '12 px · muted', '<span class="meta">10:31 PM · 4:12</span>'],
+    ['Eyebrow', '10 px · uppercase · wider · muted', '<span class="eyebrow">Board</span> <span class="stat-value" style="margin-left:8px">IZZARD</span>'],
+    ['Whisper', '12 px · lowercase · muted/70', '<span class="whisper">board code</span>'],
+    ['Micro', '9–10 px · muted/30', '<span class="micro">2026-02-15 16:15:09 (717c4d3)</span>']
+  ];
+  $('typeSpecs').innerHTML = SPECS.map(function (s) {
+    return '<div class="spec"><div class="meta"><b>' + s[0] + '</b>' + s[1] + '</div><div>' + s[2] + '</div></div>';
+  }).join('');
+
+  /* ------------------------------------------------------------ icon grid */
+  var ICN = [['arrow-left', 'Back / exit', 'ArrowLeft'], ['undo', 'Undo', 'Undo2'], ['redo', 'Redo', 'Redo2'], ['lightbulb', 'Hint', 'Lightbulb'],
+    ['shield-check', 'Helpers on', 'ShieldCheck'], ['shield-off', 'Helpers off', 'ShieldOff'], ['share', 'Share', 'Share2'], ['help', 'Help', 'HelpCircle'],
+    ['refresh', 'New code', 'RefreshCw'], ['loader', 'Working', 'Loader2'], ['pencil', 'Edit', 'Pencil'], ['check', 'Confirm', 'Check'],
+    ['chevron-left', 'Previous', 'ChevronLeft'], ['chevron-down', 'More below', 'ChevronDown'], ['x', 'Close / delete', 'X'], ['download', 'Install', 'Download'],
+    ['sticky-note', 'Notes', 'StickyNote'], ['eye-off', 'Hide UI', 'EyeOff'], ['coffee', 'Support', 'Coffee']];
+  $('iconGrid').innerHTML = ICN.map(function (i) { return '<div>' + svg(i[0]) + '<span>' + i[1] + '<small>' + i[2] + '</small></span></div>'; }).join('');
+
+  /* ------------------------------------------------------------ stage demo */
+  var phone = $('phone'), wrap = $('phoneWrap');
+  var ph = { state: 'start', hidden: false, orient: 'portrait', t: 0, timer: null };
+  function fitPhone() {
+    var w = ph.orient === 'portrait' ? 320 : 620, h = ph.orient === 'portrait' ? 600 : 300;
+    var avail = wrap.parentElement.clientWidth - 40;
+    var s = Math.min(1, avail / w);
+    wrap.style.width = (w * s) + 'px'; wrap.style.height = (h * s) + 'px';
+    phone.style.transform = 'scale(' + s + ')';
+  }
+  function setHidden(el, hidden, cls) {
+    ['is-hidden-up', 'is-hidden-down', 'is-hidden-left', 'is-hidden-right', 'is-hidden-scale'].forEach(function (c) { el.classList.remove(c); });
+    if (hidden) el.classList.add(cls);
+  }
+  function renderPhone() {
+    var start = ph.state === 'start', chromeOn = !start && !ph.hidden, land = ph.orient === 'landscape';
+    $('phBoard').classList.toggle('board--preview', start);
+    setHidden($('phHeader'), !start, 'is-hidden-up');
+    setHidden($('phFooter'), !start, 'is-hidden-down');
+    setHidden($('phStart'), !start, 'is-hidden-scale');
+    setHidden($('phBack'), !chromeOn, 'is-hidden-scale');
+    setHidden(phone.querySelector('.ph-help'), !chromeOn, 'is-hidden-scale');
+    setHidden($('phStats'), !chromeOn, land ? 'is-hidden-left' : 'is-hidden-up');
+    setHidden($('phBar'), !chromeOn, land ? 'is-hidden-right' : 'is-hidden-down');
+    var step = start ? 0 : (ph.hidden ? 2 : 1);
+    $('phSteps').querySelectorAll('li').forEach(function (li, i) { li.classList.toggle('now', i === step); });
+    clearInterval(ph.timer);
+    if (!start) ph.timer = setInterval(function () { ph.t++; $('phTime').textContent = Math.floor(ph.t / 60) + ':' + ('0' + ph.t % 60).slice(-2); }, 1000);
+  }
+  $('phStart').addEventListener('click', function () { ph.state = 'game'; ph.hidden = false; ph.t = 0; $('phTime').textContent = '0:00'; renderPhone(); });
+  $('phBack').addEventListener('click', function (e) { e.stopPropagation(); ph.state = 'start'; ph.hidden = false; renderPhone(); });
+  phone.addEventListener('click', function (e) {
+    if (ph.state !== 'game') return;
+    if (e.target === phone || e.target === $('phStage')) { ph.hidden = !ph.hidden; renderPhone(); }
+  });
+  $('stageDemo').querySelectorAll('.seg button').forEach(function (b) {
+    b.addEventListener('click', function () {
+      ph.orient = b.dataset.orient; phone.dataset.orient = ph.orient;
+      $('stageDemo').querySelectorAll('.seg button').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+      fitPhone(); renderPhone();
+    });
+  });
+  window.addEventListener('resize', fitPhone);
+  fitPhone(); renderPhone();
+
+  /* ------------------------------------------------------------ motion */
+  var DUR = [['instant', 100, 'dial follows finger'], ['fast', 150, 'hover, cell state'], ['base', 200, 'buttons, collapse'], ['chrome', 300, 'show / hide chrome'],
+    ['screen', 500, 'start ⇄ game'], ['pulse', 800, 'hint pulse'], ['ambient', 1000, 'page tint']];
+  $('ruler').innerHTML = DUR.map(function (d) {
+    return '<div title="' + d[2] + '" style="--d:' + d[1] + 'ms"><span>' + d[0] + '</span><i style="width:' + (d[1] / 10) + '%"></i><span>' + d[1] + '</span></div>';
+  }).join('') + '<div style="grid-template-columns:74px 1fr"><span></span><span class="meta" style="font-size:10px">' + DUR.map(function (d) { return d[0] + ': ' + d[2]; }).join(' · ') + '</span></div>';
+  $('rulerPlay').addEventListener('click', function () { var r = $('ruler'); r.classList.remove('play'); void r.offsetWidth; r.classList.add('play'); });
+  function replay(el, cls) { el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); }
+  document.querySelectorAll('[data-anim]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var t = $('animTarget'); ['anim-fade-in', 'anim-scale-in', 'anim-slide-up'].forEach(function (c) { t.classList.remove(c); });
+      replay(t, b.dataset.anim);
+    });
+  });
+  $('hintPlay').addEventListener('click', function () { replay($('hintTarget'), 'cell--hint'); });
+
+  function pulseCells(el) { var h = ''; for (var i = 0; i < 6; i++) h += '<div class="cell">' + [3, 8, 1, 3, 6, 8][i] + '</div>'; el.innerHTML = h; }
+  var pulseTimers = [];
+  function pulseReset() { pulseTimers.forEach(clearTimeout); pulseTimers = []; pulseCells($('pulseSync')); pulseCells($('pulseRaw')); }
+  pulseReset();
+  $('pulseGo').addEventListener('click', function () {
+    pulseReset();
+    for (var i = 0; i < 6; i++) (function (i) {
+      pulseTimers.push(setTimeout(function () {
+        $('pulseSync').children[i].classList.add('cell--error');
+        var raw = $('pulseRaw').children[i]; raw.classList.add('cell--error', 'no-sync');
+      }, 380 * i));
+    })(i);
+  });
+  $('pulseReset').addEventListener('click', pulseReset);
+
+  /* ------------------------------------------------------------ radial dial */
+  var BOX = [5, 3, 0, 6, 0, 0, 0, 9, 8];
+  var cells = BOX.map(function (v) { return { given: v > 0, value: v || null, notes: [] }; });
+  var sel = null, dial = null;
+  var NOTE_POS = ['top:2px;left:4px', 'top:2px;right:4px', 'bottom:2px;left:4px', 'bottom:2px;right:4px', 'top:2px;left:50%;transform:translateX(-50%)', 'bottom:2px;left:50%;transform:translateX(-50%)', 'top:50%;left:3px;transform:translateY(-50%)', 'top:50%;right:3px;transform:translateY(-50%)'];
+  function present(except) { var s = {}; cells.forEach(function (c, i) { if (i !== except && c.value) s[c.value] = true; }); return s; }
+  function renderDialBoard() {
+    var b = $('dialBoard'); var dup = {};
+    cells.forEach(function (c, i) { if (c.value) { dup[c.value] = (dup[c.value] || 0) + 1; } });
+    b.innerHTML = cells.map(function (c, i) {
+      var cls = 'cell' + (c.given ? ' cell--given' : (c.value ? ' cell--player' : ''));
+      if (sel === i) cls += ' cell--selected'; else if (sel !== null) cls += ' cell--related';
+      if (c.value && dup[c.value] > 1) cls += ' cell--error';
+      var notes = c.value ? '' : c.notes.map(function (n, k) { return '<span class="cell-note" style="' + NOTE_POS[k] + '">' + n + '</span>'; }).join('');
+      return '<div class="' + cls + '" data-i="' + i + '" tabindex="0">' + (c.value || '') + notes + '</div>';
+    }).join('');
+  }
+  function status(t) { $('dialStatus').innerHTML = t || '&nbsp;'; }
+  function setValue(i, v) { if (cells[i].given) return; cells[i].value = v; renderDialBoard(); }
+  function toggleNote(i, d) {
+    var n = cells[i].notes, k = n.indexOf(d);
+    if (k >= 0) n.splice(k, 1); else if (n.length < 8) { n.push(d); n.sort(); }
+    renderDialBoard();
+  }
+  renderDialBoard();
+  var press = null;
+  $('dialBoard').addEventListener('contextmenu', function (e) { e.preventDefault(); });
+  $('dialBoard').addEventListener('pointerdown', function (e) {
+    var el = e.target.closest('.cell'); if (!el) return;
+    var i = +el.dataset.i; sel = i; renderDialBoard();
+    var cellEl = $('dialBoard').children[i]; cellEl.focus({ preventScroll: true });
+    if (cells[i].given) { status('Givens are fixed: bold, not editable.'); return; }
+    e.preventDefault();
+    press = { i: i, x: e.clientX, y: e.clientY, id: e.pointerId, timer: setTimeout(function () { openDial(); }, 300) };
+    try { $('dialBoard').setPointerCapture(e.pointerId); } catch (err) {}
+    status('Holding…');
+  });
+  function openDial() {
+    var M = 80, ax = Math.max(M, Math.min(innerWidth - M, press.x)), ay = Math.max(M, Math.min(innerHeight - M, press.y));
+    var layer = document.createElement('div'); layer.className = 'dial-layer'; layer.style.left = ax + 'px'; layer.style.top = ay + 'px';
+    document.body.appendChild(layer);
+    dial = { layer: layer, ax: ax, ay: ay, hovered: null, onTop: false, conflict: present(press.i), fx: press.x, fy: press.y };
+    drawDial(); status('Dial open: drag toward a digit.');
+  }
+  function drawDial() {
+    var d = dial, i = press.i, h = '';
+    var ox = d.fx - d.ax, oy = d.fy - d.ay;
+    h += '<svg style="position:absolute;left:0;top:0;overflow:visible;color:hsl(var(--foreground))" width="1" height="1"><line x1="0" y1="0" x2="' + ox + '" y2="' + oy + '" stroke="currentColor" stroke-width="2" stroke-opacity=".3" stroke-linecap="round"/></svg>';
+    h += '<div class="dial-item' + (d.hovered === 0 ? ' dial-item--commit' : '') + '" style="left:-20px;top:-20px">×</div>';
+    for (var g = 1; g <= 9; g++) {
+      var a = ((g - 1) / 9) * 2 * Math.PI - Math.PI / 2, hov = d.hovered === g, r = hov && d.onTop ? 105 : 60;
+      var cls = 'dial-item' + (d.conflict[g] ? ' dial-item--disabled' : '') + (hov ? (d.onTop ? ' dial-item--commit' : ' dial-item--aim') : '') + (cells[i].notes.indexOf(g) >= 0 && !d.conflict[g] ? ' dial-item--noted' : '');
+      h += '<div class="' + cls + '" style="left:' + (Math.cos(a) * r - 20) + 'px;top:' + (Math.sin(a) * r - 20) + 'px;transform:scale(' + (hov ? 1.6 : 1) + ')">' + g + '</div>';
+    }
+    d.layer.innerHTML = h;
+  }
+  $('dialBoard').addEventListener('pointermove', function (e) {
+    if (!press || !dial) return;
+    var dx = e.clientX - press.x, dy = e.clientY - press.y, dist = Math.sqrt(dx * dx + dy * dy);
+    dial.fx = e.clientX; dial.fy = e.clientY;
+    var hov = null, top = false;
+    if (dist > 40) {
+      var a = Math.atan2(dy, dx) + Math.PI / 2 + Math.PI / 9;
+      if (a < 0) a += 2 * Math.PI; if (a >= 2 * Math.PI) a -= 2 * Math.PI;
+      var cand = (Math.floor(a / (2 * Math.PI) * 9) % 9) + 1;
+      if (!dial.conflict[cand]) { hov = cand; top = dist >= 55; }
+    } else if (dist < 25) { hov = 0; top = true; }
+    dial.hovered = hov; dial.onTop = top; drawDial();
+    status(hov === null ? 'Nothing selected (impossible digits are skipped).' : hov === 0 ? 'Center: release to <b>clear</b>.' : top ? 'Pushed through: release to <b>place ' + hov + '</b>.' : 'Aiming: release to <b>toggle note ' + hov + '</b>.');
+  });
+  function endPress(cancel) {
+    if (!press) return;
+    clearTimeout(press.timer);
+    if (dial) {
+      var i = press.i, h = dial.hovered;
+      if (!cancel && h !== null) {
+        if (h === 0) { setValue(i, null); status('Cleared.'); }
+        else if (dial.onTop) { setValue(i, h); status('Placed ' + h + '.'); }
+        else { toggleNote(i, h); status('Toggled note ' + h + '.'); }
+      } else status('Released on nothing: no change.');
+      dial.layer.remove(); dial = null;
+    } else status('Tap = select. Hold 300 ms for the dial, or type a digit.');
+    press = null;
+  }
+  $('dialBoard').addEventListener('pointerup', function () { endPress(false); });
+  $('dialBoard').addEventListener('pointercancel', function () { endPress(true); });
+  $('dialBoard').addEventListener('keydown', function (e) {
+    if (sel === null || cells[sel].given) return;
+    var m = e.code.match(/^Digit([1-9])$/);
+    if (m) {
+      e.preventDefault(); var d = +m[1];
+      if (e.shiftKey) { toggleNote(sel, d); status('Shift+' + d + ': toggled note.'); }
+      else if (!e.altKey && !e.ctrlKey && !e.metaKey) { setValue(sel, d); status('Typed ' + d + '.'); }
+      $('dialBoard').children[sel].focus({ preventScroll: true });
+    } else if (e.key === 'Backspace' || e.key === 'Delete' || e.code === 'Digit0') { e.preventDefault(); setValue(sel, null); status('Cleared.'); $('dialBoard').children[sel].focus({ preventScroll: true }); }
+  });
+
+  /* ------------------------------------------------------------ long-press ladder */
+  var MAX = 3000, MARKS = [[300, 'dial'], [500, 'options'], [1000, 'peek'], [3000, 'easter egg']];
+  var track = $('ladderTrack');
+  MARKS.forEach(function (m) {
+    var t = document.createElement('div'); t.className = 'tick'; t.style.left = (m[0] / MAX * 100) + '%';
+    t.innerHTML = '<span>' + m[0] + '<br>' + m[1] + '</span>'; track.appendChild(t);
+  });
+  var hold = null;
+  function holdFrame() {
+    if (!hold) return;
+    var el = performance.now() - hold.t0; hold.el = el;
+    $('ladderFill').style.width = Math.min(el / MAX, 1) * 100 + '%';
+    track.querySelectorAll('.tick').forEach(function (t, k) { t.classList.toggle('hit', el >= MARKS[k][0]); });
+    hold.raf = requestAnimationFrame(holdFrame);
+  }
+  var hb = $('holdBtn');
+  hb.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+  hb.addEventListener('pointerdown', function (e) { e.preventDefault(); hold = { t0: performance.now(), el: 0 }; $('holdStatus').innerHTML = 'Holding…'; holdFrame(); });
+  function holdEnd() {
+    if (!hold) return; cancelAnimationFrame(hold.raf);
+    var el = Math.round(hold.el), msg;
+    if (el < 300) msg = 'Tap (' + el + ' ms) → <b>primary action</b>.';
+    else if (el < 500) msg = el + ' ms → would open the <b>radial dial</b> (on a cell).';
+    else if (el < 1000) msg = el + ' ms → would open the <b>options popover</b> (on the new-code button).';
+    else if (el < 3000) msg = el + ' ms → <b>peek</b>: revealed while held, hidden on release (on the hint button).';
+    else msg = el + ' ms → <b>easter egg</b> (on the help button). Release swallows the click.';
+    $('holdStatus').innerHTML = msg; hold = null;
+    setTimeout(function () { if (!hold) { $('ladderFill').style.width = '0'; track.querySelectorAll('.tick').forEach(function (t) { t.classList.remove('hit'); }); } }, 1400);
+  }
+  hb.addEventListener('pointerup', holdEnd); hb.addEventListener('pointerleave', holdEnd); hb.addEventListener('pointercancel', holdEnd);
+
+  /* ------------------------------------------------------------ page tint */
+  var tb = $('tintBoard'), tv = '927341586';
+  tb.innerHTML = tv.split('').map(function (v, i) { return '<div class="cell' + (i % 2 ? ' cell--player' : ' cell--given') + '">' + v + '</div>'; }).join('');
+  document.querySelectorAll('[data-tint]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var p = $('tintPanel'); p.classList.remove('completion-success', 'completion-failure');
+      var cs = tb.children;
+      for (var i = 0; i < cs.length; i++) { cs[i].classList.remove('cell--error'); cs[i].textContent = tv[i]; }
+      if (b.dataset.tint === 'failure') { cs[4].textContent = '9'; cs[4].classList.add('cell--error'); cs[0].classList.add('cell--error'); }
+      if (b.dataset.tint) p.classList.add('completion-' + b.dataset.tint);
+    });
+  });
+
+  /* ------------------------------------------------------------ undo toasts */
+  var GAMES = [['M00NLT', 'Lv.11 Master', '10:31 PM'], ['IZZARD', 'Lv.5 Medium', '10:12 PM'], ['PLX9A0', 'Lv.8 Hard', 'Nov 9'], ['K7QW2M', 'Lv.3 Easy', 'Nov 2']];
+  var gone = {}, pending = [], toastTimer = null, ids = 0;
+  function thumb(seed) { var h = ''; for (var i = 0; i < 9; i++) h += '<i class="' + ((seed.charCodeAt(i % seed.length) + i) % 3 ? 'g' : '') + '"></i>'; return '<div class="thumb">' + h + '</div>'; }
+  function renderList() {
+    $('toastList').innerHTML = GAMES.map(function (g, k) {
+      return '<div class="item" data-k="' + k + '"' + (gone[k] ? ' style="display:none"' : '') + '><div class="list-card">' + thumb(g[0]) +
+        '<div style="flex:1;min-width:0"><div class="row" style="justify-content:space-between"><span style="font-size:1.05rem;letter-spacing:var(--tracking-wider)">' + g[0] + '</span><span class="meta" style="margin-right:30px">' + g[2] + '</span></div>' +
+        '<span class="overline" style="font-size:11px">' + g[1] + '</span></div></div>' +
+        '<button class="del" aria-label="Delete ' + g[0] + '">' + svg('x', 14) + '</button></div>';
+    }).join('');
+  }
+  function renderToasts() {
+    var h = '';
+    if (pending.length > 1) h += '<button class="undo-all" data-undo="all">Undo all</button>';
+    pending.forEach(function (p) {
+      h += '<div class="toast"><span><span style="letter-spacing:var(--tracking-wider)">' + GAMES[p.k][0] + '</span> <span class="muted">removed</span></span><span class="row" style="gap:4px;flex-wrap:nowrap"><button class="toast-action" data-undo="' + p.id + '">Undo</button><button class="icon-button" style="padding:4px" data-dismiss="' + p.id + '" aria-label="Dismiss">' + svg('x', 14) + '</button></span></div>';
+    });
+    $('toastStack').innerHTML = h;
+    var allGone = GAMES.every(function (g, k) { return gone[k]; });
+    if (allGone && !pending.length) $('toastList').innerHTML = '<div class="center" style="padding:40px 0"><button class="btn-ghost" id="toastResetBtn">Reset demo</button></div>';
+  }
+  function restartTimer() { clearTimeout(toastTimer); toastTimer = setTimeout(function () { pending = []; renderToasts(); }, 5000); }
+  $('toastDemo').addEventListener('click', function (e) {
+    var del = e.target.closest('.del');
+    if (del) {
+      var item = del.closest('.item'), k = +item.dataset.k;
+      item.style.height = item.offsetHeight + 'px'; void item.offsetHeight;
+      item.style.height = '0px'; item.style.opacity = '0'; item.style.marginTop = '-8px';
+      setTimeout(function () { gone[k] = true; pending.push({ k: k, id: ++ids }); renderList(); renderToasts(); restartTimer(); }, 200);
+      return;
+    }
+    var u = e.target.closest('[data-undo]');
+    if (u) {
+      if (u.dataset.undo === 'all') { pending.forEach(function (p) { delete gone[p.k]; }); pending = []; }
+      else { pending = pending.filter(function (p) { if (String(p.id) === u.dataset.undo) { delete gone[p.k]; return false; } return true; }); }
+      renderList(); renderToasts(); return;
+    }
+    var d = e.target.closest('[data-dismiss]');
+    if (d) { pending = pending.filter(function (p) { return String(p.id) !== d.dataset.dismiss; }); renderList(); renderToasts(); return; }
+    if (e.target.id === 'toastResetBtn') { gone = {}; pending = []; renderList(); renderToasts(); }
+  });
+  renderList();
+
+  /* ------------------------------------------------------------ components */
+  var ALNUM = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', code = 'IZZARD', editing = false;
+  function renderCode() {
+    var c = $('codeSel');
+    c.innerHTML = '<button class="icon-button" data-act="roll" aria-label="New random code">' + svg('refresh') + '</button>' +
+      (editing ? '<input class="code-display code-input" maxlength="8" value="' + code + '" aria-label="Board code" />' : '<button class="code-display" data-act="roll">' + code + '</button>') +
+      '<button class="icon-button" data-act="edit" aria-label="' + (editing ? 'Confirm code' : 'Edit code') + '">' + svg(editing ? 'check' : 'pencil') + '</button>';
+    if (editing) { var inp = c.querySelector('input'); inp.focus(); inp.select();
+      inp.addEventListener('input', function () { inp.value = inp.value.toUpperCase(); });
+      inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') confirmCode(); if (e.key === 'Escape') { editing = false; renderCode(); } });
+    }
+  }
+  function confirmCode() { var inp = $('codeSel').querySelector('input'); var v = inp ? inp.value.toUpperCase().replace(/[^0-9A-Z]/g, '').slice(0, 8) : ''; if (v) code = v; editing = false; renderCode(); }
+  $('codeSel').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-act]'); if (!b) return;
+    if (b.dataset.act === 'roll' && !editing) { code = ''; for (var i = 0; i < 6; i++) code += ALNUM[Math.floor(Math.random() * 36)]; renderCode(); }
+    if (b.dataset.act === 'edit') { if (editing) confirmCode(); else { editing = true; renderCode(); } }
+  });
+  renderCode();
+
+  var LV = [['Beginner', 'Anfänger', 'Débutant', 'Principiante'], ['Novice', 'Neuling', 'Novice', 'Novato'], ['Easy', 'Leicht', 'Facile', 'Fácil'], ['Casual', 'Entspannt', 'Tranquille', 'Casual'],
+    ['Medium', 'Mittel', 'Moyen', 'Medio'], ['Moderate', 'Mäßig', 'Modéré', 'Moderado'], ['Tricky', 'Knifflig', 'Rusé', 'Engañoso'], ['Hard', 'Schwer', 'Difficile', 'Difícil'],
+    ['Tough', 'Anspruchsvoll', 'Corsé', 'Duro'], ['Expert', 'Experte', 'Expert', 'Experto'], ['Master', 'Meister', 'Maître', 'Maestro'], ['Insane', 'Wahnsinn', 'Dément', 'Locura']];
+  var lvl = 5;
+  function renderStepper() {
+    $('stepper').innerHTML = '<button class="icon-button" data-d="-1" aria-label="Decrease difficulty"' + (lvl <= 1 ? ' disabled' : '') + '>' + svg('chevron-left', 24) + '</button>' +
+      '<div class="mid"><div class="overline">Level ' + lvl + '</div><div class="val">' + LV[lvl - 1][0] + '</div></div>' +
+      '<button class="icon-button" data-d="1" aria-label="Increase difficulty"' + (lvl >= 12 ? ' disabled' : '') + '>' + svg('chevron-right', 24) + '</button>';
+  }
+  $('stepper').addEventListener('click', function (e) { var b = e.target.closest('[data-d]'); if (!b || b.disabled) return; lvl = Math.max(1, Math.min(12, lvl + +b.dataset.d)); renderStepper(); });
+  renderStepper();
+  $('ladderTbl').innerHTML += LV.map(function (l, i) { return '<tr><td>' + (i + 1) + '</td><td>' + l[0] + (i === 4 ? ' <span class="muted">· default</span>' : '') + '</td><td>' + l[1] + '</td><td>' + l[2] + '</td><td>' + l[3] + '</td></tr>'; }).join('');
+
+  /* ------------------------------------------------------------ URL anatomy */
+  var URLP = [
+    ['https://izzardry.github.io/zudoku/', '<b>Static host.</b> GitHub Pages, <code>base: "./"</code>. No server, no account.'],
+    ['#/?', '<b>HashRouter.</b> Routing that works on any static path.'],
+    ['s=IZZARD', '<b>s = code.</b> Uppercase A–Z 0–9, 6 generated, ≤ 8 typed. Same code = same puzzle.'],
+    ['&d=5', '<b>d = level.</b> 1–12. Code + level identify one game.'],
+    ['&p=1', '<b>p = playing.</b> Without it, the link opens the start screen with this puzzle previewed.'],
+    ['&b=53..7…~4:17', '<b>b = current board.</b> Compact string; notes follow after <code>~</code>.'],
+    ['&i=53..7…', '<b>i = initial board.</b> What was given, so givens stay bold.'],
+    ['&t=252', '<b>t = elapsed seconds.</b> The timer resumes from here.']
+  ];
+  $('url').innerHTML = URLP.map(function (p, i) { return '<span class="seg-p" tabindex="0" data-i="' + i + '">' + p[0].replace(/&/g, '&amp;') + '</span>'; }).join('');
+  function explain(i) { $('url').querySelectorAll('.seg-p').forEach(function (s) { s.classList.toggle('on', +s.dataset.i === i); }); $('urlExplain').innerHTML = URLP[i][1]; }
+  $('url').addEventListener('mouseover', function (e) { var s = e.target.closest('.seg-p'); if (s) explain(+s.dataset.i); });
+  $('url').addEventListener('click', function (e) { var s = e.target.closest('.seg-p'); if (s) explain(+s.dataset.i); });
+  $('url').addEventListener('focusin', function (e) { var s = e.target.closest('.seg-p'); if (s) explain(+s.dataset.i); });
+
+  /* ------------------------------------------------------------ checklist */
+  var CL = [
+    ['Brand', ['Name follows the Z-pattern (or the exception is noted)', 'Wordmark: UPPERCASE, light, 0.3em tracking', 'Tagline "Zero Distractions. Just <Game>." everywhere', 'author meta = izzardry', 'Grayscale icon set: 192, 512, 512 maskable, favicon (real PNGs)', 'OG image 1200 × 630 in the izzardry style']],
+    ['Look', ['Ztyle tokens imported; no ad-hoc colors', 'Brand mono font bundled', 'halftone-bg on the page root', 'Only red/green, only semantically', 'Light and dark checked; follows system', 'One primary per screen; pills; labelled icon buttons']],
+    ['Layout', ['Board centered and stationary across start ⇄ game', 'Start = blurred preview + Start pill', 'Floating, safe-area-aware chrome; tap background hides it', 'Portrait and mobile landscape (rails)', 'Board fits without scrolling, 320 × 568 → 4K']],
+    ['Interaction', ['Touch, mouse and keyboard can each finish a game', 'Long-press ladder 300/500/1000/3000; trailing click swallowed', 'Undo/redo for every move', 'Destructive = immediate + undo toast', 'active:scale-95; select-none on game surfaces']],
+    ['Feedback', ['One helpers toggle, on by default', 'Hint: tap = one step, hold = peek', 'End state: page tint + celebration overlay', 'Long work in workers; spinner in place; cancel restores']],
+    ['Data & platform', ['Deterministic content from an uppercase code', 'Full state in the URL; share = URL', 'Autosave every move; last 100; history with thumbnails', 'Storage keys <game>:<key>, reads in try/catch', 'PWA: offline, network-first HTML, update toast, version stamp', 'GitHub Pages deploy; base "./"; HashRouter']],
+    ['Words & respect', ['EN, DE, FR, ES incl. aria-labels; <html lang> follows', 'Copy checked against the voice table', 'No ads, tracking or accounts', 'Donation once, after first win, +1.5 s, "maybe another time"', 'Tutorial overlay on first game; reachable via ?', 'One small easter egg']],
+    ['Accessibility', ['Brand focus ring', 'prefers-reduced-motion honored', 'Never color-only state', 'Touch targets ≥ 44 px on coarse pointers']]
+  ];
+  var saved = {}; try { saved = JSON.parse(store('ztyle:checklist') || '{}') || {}; } catch (e) { saved = {}; }
+  var total = 0;
+  function esc(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  $('checklistBox').innerHTML = CL.map(function (g, gi) {
+    return '<div class="check-group"><h4>' + g[0] + '<span data-gc="' + gi + '"></span></h4>' + g[1].map(function (t, ti) {
+      total++; var k = gi + '.' + ti;
+      return '<label class="check"><input type="checkbox" data-k="' + k + '"' + (saved[k] ? ' checked' : '') + ' /><span>' + esc(t) + '</span></label>';
+    }).join('') + '</div>';
+  }).join('');
+  function countChecks() {
+    var boxes = $('checklistBox').querySelectorAll('input'), n = 0;
+    boxes.forEach(function (b) { if (b.checked) n++; });
+    $('checkCount').textContent = n + ' / ' + total + ' done';
+    $('checkBar').style.width = (n / total * 100) + '%';
+    CL.forEach(function (g, gi) {
+      var c = 0; g[1].forEach(function (t, ti) { if ($('checklistBox').querySelector('[data-k="' + gi + '.' + ti + '"]').checked) c++; });
+      $('checklistBox').querySelector('[data-gc="' + gi + '"]').textContent = c + '/' + g[1].length;
+    });
+  }
+  $('checklistBox').addEventListener('change', function (e) {
+    var k = e.target.dataset.k; if (!k) return;
+    if (e.target.checked) saved[k] = 1; else delete saved[k];
+    store('ztyle:checklist', JSON.stringify(saved)); countChecks();
+  });
+  $('checkReset').addEventListener('click', function () { saved = {}; store('ztyle:checklist', '{}'); $('checklistBox').querySelectorAll('input').forEach(function (b) { b.checked = false; }); countChecks(); });
+  countChecks();
+
+  hydrate();
+})();
+</script>
+</body>
+</html>
