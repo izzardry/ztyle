@@ -165,6 +165,19 @@
   .swatch .name { font-size: 12px; }
   .swatch .name span { display: block; font-size: 10px; color: hsl(var(--muted-foreground)); }
   .swatch .val { font-size: 10px; color: hsl(var(--muted-foreground)); text-align: right; }
+  .two-tone { display: grid; grid-template-columns: repeat(4, 44px); padding: 4px; width: fit-content; margin: 0 auto; background: hsl(var(--foreground) / .1); border-radius: var(--radius); box-shadow: var(--shadow-lg); }
+  .two-tone i { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background-color: hsl(var(--card)); }
+  .two-tone i.l { background-image: linear-gradient(var(--checker-light), var(--checker-light)); }
+  .two-tone i.d { background-image: linear-gradient(var(--checker-dark), var(--checker-dark)); }
+  .two-tone i.l.hl { background-image: linear-gradient(hsl(var(--foreground) / .05), hsl(var(--foreground) / .05)), linear-gradient(var(--checker-light), var(--checker-light)); box-shadow: inset 0 0 0 2px hsl(var(--foreground) / .5); }
+  .two-tone i.d.hl { background-image: linear-gradient(hsl(var(--foreground) / .05), hsl(var(--foreground) / .05)), linear-gradient(var(--checker-dark), var(--checker-dark)); }
+  .two-tone i:nth-child(1) { border-top-left-radius: calc(var(--radius) - 2px); }
+  .two-tone i:nth-child(4) { border-top-right-radius: calc(var(--radius) - 2px); }
+  .two-tone i:nth-child(13) { border-bottom-left-radius: calc(var(--radius) - 2px); }
+  .two-tone i:nth-child(16) { border-bottom-right-radius: calc(var(--radius) - 2px); }
+  .two-tone .stone { width: 26px; height: 26px; border-radius: 50%; border: 2px solid hsl(var(--foreground)); box-sizing: border-box; }
+  .two-tone .stone.w { background: hsl(var(--ink-light)); }
+  .two-tone .stone.b { background: hsl(var(--ink-dark)); }
   .ladder { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 8px; }
   .ladder div { border-radius: 8px; height: 64px; border: 1px solid hsl(var(--border)); display: flex; flex-direction: column; justify-content: flex-end; padding: 6px; font-size: 10px; background: hsl(var(--background)); position: relative; overflow: hidden; }
   .ladder div i { position: absolute; inset: 0; }
@@ -319,6 +332,20 @@
   .codesel { display: flex; align-items: center; gap: 10px; }
   .codesel .code-display { background: none; border: 0; color: inherit; font-family: inherit; cursor: pointer; padding: 0; }
   .codesel .code-input { width: 7.5em; }
+  .ref-apps { margin: 20px 0; }
+  .ref-app { display: flex; flex-direction: column; gap: 8px; border: 1px solid hsl(var(--border)); border-radius: .75rem; padding: 16px; background: hsl(var(--card)); }
+  .ref-app .ref-name { font-weight: 300; letter-spacing: var(--tracking-mark); font-size: 22px; line-height: 1.2; }
+  .ref-app p { font-size: 13px; margin: 0; }
+  .ref-app .row { margin-top: auto; padding-top: 4px; }
+  .ref-app a { text-decoration: none; }
+  .opt-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+  .opt-row .pill-sm { color: hsl(var(--foreground) / .8); text-transform: lowercase; min-height: 2.25rem; padding: 0 1rem; }
+  .status-line { display: flex; align-items: center; justify-content: center; gap: 6px; height: 24px; font-size: 10px; text-transform: uppercase; letter-spacing: var(--tracking-widest); color: hsl(var(--muted-foreground)); }
+  .status-line .bar { position: relative; width: 48px; height: 2px; border-radius: 9999px; background: hsl(var(--foreground) / .15); overflow: hidden; }
+  .status-line .bar i { position: absolute; inset: 0 auto 0 0; width: 43%; border-radius: 9999px; background: hsl(var(--foreground) / .6); }
+  .presence { display: inline-block; width: 8px; height: 8px; border-radius: 50%; vertical-align: middle; }
+  .presence.on { background: hsl(var(--success)); }
+  .presence.wait { border: 1.5px solid hsl(var(--muted-foreground)); box-sizing: border-box; animation: z-fade-in 1s ease-in-out infinite alternate; }
   .dialog-mock { width: 100%; max-width: 340px; text-align: center; padding: 22px 18px; border-radius: 1rem; background: hsl(var(--card)); border: 1px solid hsl(var(--border)); box-shadow: var(--shadow-xl); box-sizing: border-box; }
   .dialog-mock .disc { width: 44px; height: 44px; border-radius: 50%; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; background: #fef3c7; color: #d97706; }
   .dark .dialog-mock .disc { background: rgb(120 53 15 / .3); color: #fbbf24; }
@@ -399,7 +426,7 @@
   </div>
   <div class="hero-bottom">
     <span class="overline">the izzardry style guide</span>
-    <span class="meta">extracted from Zudoku · Nov 2026</span>
+    <span class="meta">extracted from Zudoku · proven by Zhess · Nov 2026</span>
     <a href="#idea" class="bounce" aria-label="Scroll to the guide"><span data-icon="chevron-down" data-size="24"></span></a>
   </div>
 </div>
@@ -412,7 +439,22 @@
 
   <div class="rule"><span class="eyebrow">In one line</span><p>An izzardry game is a monochrome, monospaced, paper-quiet surface with the board in the middle. Everything else floats, appears only when needed, and gets out of the way.</p></div>
 
-  <p>Everything here was extracted from <b>Zudoku</b>, the first izzardry game, and is shown with its real screenshots. Zudoku is the <i>reference implementation</i>: when this guide is silent, do what Zudoku does. Where Zudoku departs from the guide, the guide wins (see <a href="#audit">the audit</a>).</p>
+  <p>Everything here was extracted from <b>Zudoku</b>, the first izzardry game, and proven by <b>Zhess</b>, the second, which was built on this guide from its first commit. Both are <i>reference implementations</i>: when this guide is silent, do what they do. Where either departs from the guide, the guide wins (see <a href="#audit">the Zudoku audit</a> and <a href="#zhess-audit">the Zhess audit</a>).</p>
+
+  <div class="grid-2 ref-apps">
+    <div class="ref-app">
+      <span class="eyebrow">Reference app 1 · solo puzzle</span>
+      <span class="ref-name">ZUDOKU</span>
+      <p>Seed-based Sudoku. The source of the guide: the stage, the blurred start, the radial dial, the long-press ladder, the page tint, undo toasts.</p>
+      <div class="row"><a class="pill-sm" href="#audit"><span data-icon="check"></span>Audit</a></div>
+    </div>
+    <div class="ref-app">
+      <span class="eyebrow">Reference app 2 · opponent, two devices</span>
+      <span class="ref-name">ZHESS</span>
+      <p>Chess against the computer, two players on one device, or a serverless room for two. It tested the guide on a two-tone board, in dark mode and across devices.</p>
+      <div class="row" style="gap:8px"><a class="pill-sm" href="https://izzardry.github.io/zhess/"><span data-icon="play"></span>Play Zhess</a><a class="pill-sm" href="#zhess-audit"><span data-icon="check"></span>Audit</a></div>
+    </div>
+  </div>
 
   <div class="shots">
     <figure><img src="assets/screenshots/01-start-mobile.png" alt="Start screen" loading="lazy" /><figcaption>Start</figcaption></figure>
@@ -422,6 +464,16 @@
     <figure><img src="assets/screenshots/07-completion.png" alt="Completion" loading="lazy" /><figcaption>Completion</figcaption></figure>
     <figure><img class="wide" src="assets/screenshots/16-game-landscape.png" alt="Landscape" loading="lazy" /><figcaption>Landscape</figcaption></figure>
     <figure><img class="wide" src="assets/screenshots/11-history-desktop.png" alt="History" loading="lazy" /><figcaption>History</figcaption></figure>
+  </div>
+  <div class="shots">
+    <figure><img src="assets/screenshots/zhess/01-start-mobile.png" alt="Zhess start screen" loading="lazy" /><figcaption>Zhess · start</figcaption></figure>
+    <figure><img src="assets/screenshots/zhess/02-game-mobile-dark.png" alt="Zhess game, dark theme" loading="lazy" /><figcaption>Game · dark</figcaption></figure>
+    <figure><img src="assets/screenshots/zhess/04-face-to-face.png" alt="Zhess face-to-face seating" loading="lazy" /><figcaption>Face to face</figcaption></figure>
+    <figure><img src="assets/screenshots/zhess/06-clock-dial.png" alt="Zhess clock dial" loading="lazy" /><figcaption>Clock dial</figcaption></figure>
+    <figure><img src="assets/screenshots/zhess/07-invite-sheet.png" alt="Zhess invite sheet" loading="lazy" /><figcaption>Room invite</figcaption></figure>
+    <figure><img src="assets/screenshots/zhess/08-win-overlay.png" alt="Zhess win overlay" loading="lazy" /><figcaption>Win</figcaption></figure>
+    <figure><img class="wide" src="assets/screenshots/zhess/05-game-landscape.png" alt="Zhess in mobile landscape" loading="lazy" /><figcaption>Landscape</figcaption></figure>
+    <figure><img class="wide" src="assets/screenshots/zhess/03-game-desktop.png" alt="Zhess on desktop" loading="lazy" /><figcaption>Desktop</figcaption></figure>
   </div>
 
   <h3>How to read this guide</h3>
@@ -441,13 +493,13 @@
   <p class="lede">The whole guide in ten lines. Every later chapter expands one of these.</p>
   <ol class="rules">
     <li><a href="#layout"><b>The board is the hero.</b>Always centered, never moves between screens. Menus fade in around it.</a></li>
-    <li><a href="#color"><b>Grayscale first.</b>All UI is neutral gray. Color only means something: red = broken, green = done.</a></li>
+    <li><a href="#color"><b>Grayscale first.</b>All UI is neutral gray. Color only means something: red = broken, green = done. White pieces stay white in both themes.</a></li>
     <li><a href="#type"><b>Everything is monospace.</b>One mono face. Hierarchy from size, weight, case and tracking.</a></li>
     <li><a href="#surfaces"><b>Pills and circles.</b>Actions are round. Containers are rounded rectangles.</a></li>
     <li><a href="#layout"><b>Chrome floats.</b>Translucent bars pinned to safe edges. Tap the background to hide them all.</a></li>
     <li><a href="#motion"><b>Motion explains.</b>Fade + short slide from where it lives, ease-out, 150–500 ms.</a></li>
     <li><a href="#interaction"><b>Touch is first-class.</b>Long-press, drag-to-dial, swipe, each with a mouse/keyboard twin.</a></li>
-    <li><a href="#systems"><b>Every puzzle has a code.</b>Deterministic content from a short code. The URL is the save game.</a></li>
+    <li><a href="#systems"><b>Every game has a code.</b>Deterministic content from a short code, or the game's name and room. The URL is the save game.</a></li>
     <li><a href="#feedback"><b>Forgiving by default.</b>Undo everything, autosave everything, undo toasts instead of "Are you sure?".</a></li>
     <li><a href="#respect"><b>Respect the player.</b>No ads, no accounts. One gentle donation ask, once.</a></li>
   </ol>
@@ -478,12 +530,20 @@
   <p>Most of the nuance comes from <b>foreground at low alpha</b>, not from more gray tokens. Use these steps and nothing in between. Flip the theme (top right) and watch them invert.</p>
   <div class="ladder" id="ladder"></div>
 
+  <h3>Shades that are identity</h3>
+  <p>Inverting tokens is right for chrome and wrong for identity. White and black pieces, stones or a QR code keep their shade in both themes: fill with <code>--ink-light</code> / <code>--ink-dark</code>, outline with <code>foreground</code>. A checkerboard keeps its light cells lighter by moving the <code>foreground/10</code> step from the dark cells (light theme) to the light cells (dark theme): <code>--checker-light</code> / <code>--checker-dark</code>. Gray state fills use <b>half the step</b>, <code>foreground/5</code>, so a highlighted cell never looks like the other tone. Zhess learned all three after its first release.</p>
+  <div class="scheme-pair">
+    <div class="scheme light"><span class="eyebrow">Light</span><div class="two-tone" data-two-tone></div></div>
+    <div class="scheme dark"><span class="eyebrow">Dark</span><div class="two-tone" data-two-tone></div></div>
+  </div>
+  <p class="demo-caption">Same markup in both panels. Top left is a light cell, white stones stay light, black stones stay dark; the ringed cell carries the half-step highlight.</p>
+
   <h3>Color that means something</h3>
   <div class="state-row" id="semanticRow"></div>
   <p class="demo-caption">The page-wide tint is the signature end-state: the <i>whole background</i> fades to <code>success/12</code> (solved) or <code>destructive/12</code> (full but wrong) over 1 s. See it live in <a href="#feedback">Feedback</a>.</p>
 
   <div class="dd">
-    <div class="do"><span class="eyebrow">✓ Do</span><ul><li>Use <code>foreground/5…/30</code> for hover, selection and dividers</li><li>Pair every color with a second signal (ring, ✓, weight)</li><li>Follow the system theme; ship both palettes</li></ul></div>
+    <div class="do"><span class="eyebrow">✓ Do</span><ul><li>Use <code>foreground/5…/30</code> for hover, selection and dividers</li><li>Pair every color with a second signal (ring, ✓, weight)</li><li>Follow the system theme; ship both palettes</li><li>Keep white pieces white in dark mode</li></ul></div>
     <div class="dont"><span class="eyebrow">× Don't</span><ul><li>Introduce a "brand color" or colored primary buttons</li><li>Use green for "go" or red for decoration</li><li>Leave the browser's blue focus ring visible</li></ul></div>
   </div>
 </section>
@@ -640,6 +700,10 @@ font-variant-numeric: tabular-nums;</code></pre>
   <h3>Board sizing</h3>
   <pre><code>--cell-size: clamp(28px, min(8vw, 8vh), 52px);   /* 9 columns → ≤ 72% of the short side */</code></pre>
   <p>For other grids use <code>min(Nvw, Nvh)</code> with <code>N ≈ 72 / columns</code>. The board never scrolls, from 320 × 568 to 4K.</p>
+  <p>When chrome sits above and below the board, add a height bound and <b>measure</b> the reserve. Zhess's info pill, player strips and toolbar take about 13rem, so its 8×8 board uses <code>clamp(34px, min(11.5vw, 10vh, calc((100dvh - 14rem) / 8)), 96px)</code>: 636 px on a 1512 × 860 laptop, where a guessed 20rem gave 540 px.</p>
+
+  <h3>Two players, one device</h3>
+  <p>The board never rotates between turns. On touch devices the far player's pieces, strip and clock are drawn upside down (<b>face to face</b>); with a mouse everything stays upright (<b>side by side</b>). A toolbar button switches, and the choice is remembered. Per-player information lives in <b>strips along each player's board edge</b>; when the chrome hides, a running clock stays.</p>
 
   <h3>Layers</h3>
   <div class="zl">
@@ -653,7 +717,7 @@ font-variant-numeric: tabular-nums;</code></pre>
   </div>
 
   <div class="dd">
-    <div class="do"><span class="eyebrow">✓ Do</span><ul><li>Overlay everything with <code>position: fixed</code></li><li>Design portrait <i>and</i> landscape</li><li>Portal pop-ups out of filtered/transformed parents</li></ul></div>
+    <div class="do"><span class="eyebrow">✓ Do</span><ul><li>Overlay everything with <code>position: fixed</code></li><li>Design portrait <i>and</i> landscape</li><li>Portal pop-ups out of filtered/transformed parents</li><li>Keep toasts above the toolbar in game</li></ul></div>
     <div class="dont"><span class="eyebrow">× Don't</span><ul><li>Navigate to a separate "game page"</li><li>Push the board around with headers or banners</li><li>Detect "mobile" by width alone; use <code>pointer: coarse</code></li></ul></div>
   </div>
 </section>
@@ -795,6 +859,14 @@ font-variant-numeric: tabular-nums;</code></pre>
     <p class="demo-caption">The background fades over 1 s. A wrong board gets no modal: the tint <i>is</i> the message. A correct one then shows the celebration overlay: 🎉, title, one summary line, <b>Share</b> + <b>New Puzzle</b>.</p>
   </div>
 
+  <h3>Against an opponent</h3>
+  <ul>
+    <li>Tint from the point of view of the player holding the device: <code>success/12</code> for a win, <code>destructive/12</code> for a loss, <b>none</b> for a draw or when one device belongs to both players.</li>
+    <li><b>Guard, don't ask.</b> A move that is likely a mistake bounces back once with a red pulse; playing it again confirms. No dialog, no text.</li>
+    <li><b>Requests</b> from the other player (takeback, draw, rematch) arrive as an undo-style toast with Decline and Accept. The asker gets no toast; the button that asked pulses until the answer.</li>
+    <li>Presence messages share <b>one toast slot</b>; a failure is stated once per cause, with the one action that helps.</li>
+  </ul>
+
   <h3>Undo, not "Are you sure?"</h3>
   <div class="demo toast-demo" id="toastDemo">
     <span class="eyebrow demo-label">Try it: delete a few (hover × or tap ×)</span>
@@ -808,6 +880,7 @@ font-variant-numeric: tabular-nums;</code></pre>
     <li>The spinner replaces the icon that started the work, <i>in place</i>. There is no separate spinner area.</li>
     <li>A tooltip shows real numbers (<code>Tried: 312 seeds</code>), and tapping the spinner <b>cancels and restores</b>.</li>
     <li>Heavy work runs in Web Workers. The UI never freezes.</li>
+    <li>A large download the player didn't ask for gets a quiet <b>status line</b> on the start screen, not a spinner (see the Zhess options in <a href="#components">Components</a>).</li>
   </ul>
 
   <h3>Helpers: one switch</h3>
@@ -824,10 +897,12 @@ font-variant-numeric: tabular-nums;</code></pre>
     <div><span class="eyebrow">Ghost · .btn-ghost</span><button class="btn-ghost"><span data-icon="share" data-size="16"></span>Share</button><span class="spec-line">Secondary action beside a primary.</span></div>
     <div><span class="eyebrow">Icon · .icon-button</span><div class="row"><button class="icon-button" aria-label="Undo"><span data-icon="undo"></span></button><button class="icon-button" aria-label="Redo" disabled><span data-icon="redo"></span></button><button class="icon-button" aria-label="Hint"><span data-icon="lightbulb"></span></button></div><span class="spec-line">20 px icon, always aria-labelled; disabled at 30%.</span></div>
     <div><span class="eyebrow">Round · .fab / .pill-sm</span><div class="row"><button class="fab" aria-label="Help"><span data-icon="help"></span></button><button class="fab" aria-label="Language" style="font-size:18px">🇬🇧</button><button class="pill-sm"><span data-icon="download"></span>Install App</button></div><span class="spec-line">Corner buttons are glass circles; low-priority offers are small pills.</span></div>
-    <div class="span2"><span class="eyebrow">Toolbar · .glass .chrome-bar</span><div class="glass chrome-bar"><button class="icon-button" aria-label="Undo"><span data-icon="undo"></span></button><button class="icon-button" aria-label="Redo" disabled><span data-icon="redo"></span></button><span class="chrome-divider"></span><button class="icon-button" aria-label="Hint"><span data-icon="lightbulb"></span></button><button class="icon-button" aria-label="Helpers"><span data-icon="shield-check"></span></button><button class="icon-button" aria-label="Share"><span data-icon="share"></span></button></div><span class="spec-line">Order: history │ assist, out. ≤ 6 buttons. Vertical rail in landscape.</span></div>
+    <div class="span2"><span class="eyebrow">Toolbar · .glass .chrome-bar</span><div class="glass chrome-bar"><button class="icon-button" aria-label="Undo"><span data-icon="undo"></span></button><button class="icon-button" aria-label="Redo" disabled><span data-icon="redo"></span></button><span class="chrome-divider"></span><button class="icon-button" aria-label="Hint"><span data-icon="lightbulb"></span></button><button class="icon-button" aria-label="Helpers"><span data-icon="shield-check"></span></button><button class="icon-button" aria-label="Share"><span data-icon="share"></span></button></div><span class="spec-line">Order: history │ assist, out. Aim for ≤ 6, never more than 7. 44 px targets. Vertical rail in landscape. One slot table across modes.</span></div>
     <div><span class="eyebrow">Stats pill · .chrome-panel</span><div class="glass chrome-panel"><div><div class="eyebrow">Board</div><div class="stat-value">IZZARD</div></div><span class="chrome-divider"></span><div><div class="eyebrow">Level</div><div class="stat-value">5</div></div><span class="chrome-divider"></span><div><div class="eyebrow">Time</div><div class="stat-value">4:12</div></div></div><span class="spec-line">≤ 3 stats, eyebrow over value.</span></div>
     <div><span class="eyebrow">Code selector</span><div class="codesel" id="codeSel"></div><span class="whisper" style="margin-top:-4px">board code</span><span class="spec-line">Tap the code → new random one. ✎ → edit (A–Z, 0–9, ≤ 8).</span></div>
     <div><span class="eyebrow">Stepper</span><div class="stepper" id="stepper"></div><span class="spec-line">For ordered values. Fixed-width middle so chevrons never jump.</span></div>
+    <div><span class="eyebrow">Start options · Zhess</span><div class="opt-row"><button class="pill-sm"><svg viewBox="0 0 12 12" aria-hidden="true" style="width:12px;height:12px"><circle cx="6" cy="6" r="5" fill="none" stroke="currentColor" stroke-width="1.25"/><path d="M6 1 A5 5 0 0 1 6 11 Z" fill="currentColor"/></svg>random</button><button class="pill-sm"><span data-icon="timer"></span>off</button></div><div class="status-line"><span>Computer 43%</span><span class="bar"><i></i></span></div><div class="status-line" style="color:hsl(var(--muted-foreground)/.6)"><span data-icon="check" data-size="12"></span>Computer ready offline</div><span class="spec-line">Option pills cycle on tap, hold for custom. One faint status line for background work.</span></div>
+    <div><span class="eyebrow">Info pill · presence</span><div class="glass chrome-panel"><div><div class="eyebrow">Game</div><div class="stat-value">K7QW2M <span class="presence on" title="connected"></span></div></div><span class="chrome-divider"></span><div><div class="eyebrow">Score</div><div class="stat-value">2 – 1½</div></div><span class="chrome-divider"></span><div><div class="eyebrow">Move</div><div class="stat-value">12. Nf3</div></div></div><span class="spec-line">Dot: solid = connected, hollow and pulsing <span class="presence wait"></span> = waiting.</span></div>
     <div><span class="eyebrow">Toast</span><div class="toast" style="width:100%;max-width:340px;box-sizing:border-box"><span><span style="letter-spacing:var(--tracking-wider)">M00NLT</span> <span class="muted">removed</span></span><span class="row" style="gap:4px"><button class="toast-action">Undo</button><button class="icon-button" style="padding:4px" aria-label="Dismiss"><span data-icon="x" data-size="14"></span></button></span></div><span class="spec-line">Subject in mono, verb muted, inverted Undo.</span></div>
     <div><span class="eyebrow">List card · .list-card</span><div class="list-card" style="width:100%;max-width:340px;box-sizing:border-box;display:flex;gap:14px;align-items:center"><div class="board" id="cardThumb" style="--cell-size:5px;padding:1px;box-shadow:none;border-radius:2px;gap:0"></div><div style="flex:1"><div class="row" style="justify-content:space-between"><span style="font-size:1.125rem;letter-spacing:var(--tracking-wider)">K7QW2M</span><span class="meta">10:31 PM</span></div><div class="row" style="justify-content:space-between;margin-top:4px"><span class="overline" style="font-size:12px">Lv.3 Easy</span><span class="meta">4:12 <span style="color:hsl(var(--success))">✓</span></span></div></div></div><span class="spec-line">Thumbnail, code, level, when, elapsed, ✓.</span></div>
     <div><span class="eyebrow">Tutorial bubble · .bubble</span><div class="bubble"><div class="row" style="gap:8px;align-items:flex-start;flex-wrap:nowrap"><span data-icon="arrow-left" data-size="16" style="color:hsl(var(--primary))"></span><div><div style="font-size:12px;font-weight:500">Exit Game</div><div class="muted" style="font-size:10px">Progress saves automatically</div></div></div></div><span class="spec-line">Title + one line, real icon, ≤ 200 px.</span></div>
@@ -872,6 +947,7 @@ font-variant-numeric: tabular-nums;</code></pre>
 
   <h3>Languages</h3>
   <p><b>EN, DE (du), FR (vous), ES (tú)</b> are the baseline. Use a tiny in-house <code>t(key, params)</code> where English is the source and the type, and translate aria-labels too. The initial language comes from the stored choice, then <code>navigator.language</code>, then English. Brand strings (wordmark, tagline) are never translated.</p>
+  <p>When the table grows, split it per screen and let the type system keep all four languages complete, as Zhess does. Machine formats stay English (PGN, typed moves); dates and relative times go through <code>Intl</code>. Multiplayer words, settled by Zhess: <i>Room</i> · Raum · Salon · Sala, <i>Opponent</i> · Gegner · Adversaire · Rival.</p>
 </section>
 
 <!-- SYSTEMS -->
@@ -891,7 +967,9 @@ font-variant-numeric: tabular-nums;</code></pre>
     <tr><td>Length</td><td>6 generated · 1–8 typed (names welcome)</td></tr>
     <tr><td>Identity</td><td><code>code + level</code> = one game</td></tr>
     <tr><td>Generation</td><td>seeded PRNG only (never <code>Math.random()</code> inside)</td></tr>
-    <tr><td>User-facing name</td><td>"board code" (never "seed")</td></tr>
+    <tr><td>User-facing name</td><td>"board code" (never "seed"), or "game code"</td></tr>
+    <tr><td>No generated content</td><td>The code names the game; for two devices it is the room (Zhess)</td></tr>
+    <tr><td>Shared URL letters</td><td><code>s</code>, <code>d</code>, <code>p</code> only; every other letter belongs to the game</td></tr>
   </table></div>
 
   <h3>Saving</h3>
@@ -905,11 +983,14 @@ font-variant-numeric: tabular-nums;</code></pre>
   <div class="tbl-wrap"><table class="tbl">
     <tr><th>Concern</th><th>Standard</th></tr>
     <tr><td>Hosting</td><td>GitHub Pages via Actions · <code>base: "./"</code> · <code>HashRouter</code></td></tr>
-    <tr><td>PWA</td><td><code>vite-plugin-pwa</code>, autoUpdate, HTML network-first (3 s), <code>orientation: any</code></td></tr>
-    <tr><td>Updates</td><td>Hourly check · toast "A new version is available" + <b>Reload</b></td></tr>
+    <tr><td>PWA</td><td><code>vite-plugin-pwa</code>, autoUpdate, HTML network-first (3 s, precache <code>directoryIndex: null</code>), <code>orientation: any</code>, relative manifest icon paths</td></tr>
+    <tr><td>Large assets</td><td>Not precached · downloaded by the page with a status line · <code>CacheFirst</code> runtime cache · re-checked every launch (Zhess's 1.8 MB engine)</td></tr>
+    <tr><td>Updates</td><td>Hourly check · toast "A new version is available" + <b>Reload</b> · never an automatic reload mid-game</td></tr>
     <tr><td>Version stamp</td><td><code class="micro" style="font-size:11px;color:hsl(var(--muted-foreground)/.5)">2026-02-15 16:15:09 (717c4d3)</code> bottom-right, start screen only; tap = copy + check update</td></tr>
     <tr><td>Install</td><td>Bottom sheet once · then a small "Install App" pill</td></tr>
     <tr><td>Icons</td><td>Real PNGs: 192, 512, 512 maskable · grayscale</td></tr>
+    <tr><td>Social image</td><td>1200 × 630 · <code>og:image</code> as an absolute URL, plus <code>og:url</code></td></tr>
+    <tr><td>Two devices</td><td>Rooms with no server: WebRTC, a public broker, STUN only, link/QR fallback (<a href="docs/18-rooms.md">docs/18</a>)</td></tr>
   </table></div>
 
   <h3>Icon &amp; social image: where we're heading</h3>
@@ -917,7 +998,11 @@ font-variant-numeric: tabular-nums;</code></pre>
     <figure style="margin:0"><img src="assets/reference/zudoku-app-icon.jpg" alt="Current Zudoku icon" style="max-width:180px;display:block;margin:0 auto" /><figcaption class="demo-caption" style="text-align:center">Current icon: cream + slate, off-palette.</figcaption></figure>
     <figure style="margin:0"><img src="assets/reference/zudoku-og-image.png" alt="Current OG image" /><figcaption class="demo-caption" style="text-align:center">Current OG image: navy + Courier, off-palette.</figcaption></figure>
   </div>
-  <p><b>Target:</b> grayscale. Use <code>#0d0d0d</code> or <code>#fafafa</code>, the board motif in thin strokes, the brand mono wordmark at weight 300 with 0.3em tracking, and the halftone texture. Every izzardry icon shares one frame and stroke weight and differs only in motif. Ideally the OG image shows the <b>blurred board</b>, the most recognizable izzardry picture.</p>
+  <div class="refimg">
+    <figure style="margin:0"><img src="assets/reference/zhess-app-icon.png" alt="Zhess app icon" style="max-width:180px;display:block;margin:0 auto;border-radius:22%" /><figcaption class="demo-caption" style="text-align:center">Zhess icon: the target, shipped. Knight from the game's own piece set.</figcaption></figure>
+    <figure style="margin:0"><img src="assets/reference/zhess-og-image.png" alt="Zhess OG image" /><figcaption class="demo-caption" style="text-align:center">Zhess OG image: halftone, blurred board, wordmark, feature line.</figcaption></figure>
+  </div>
+  <p><b>Target:</b> grayscale. Use <code>#0d0d0d</code> or <code>#fafafa</code>, the board motif in thin strokes, the brand mono wordmark at weight 300 with 0.3em tracking, and the halftone texture. Every izzardry icon shares one frame and stroke weight and differs only in motif. Ideally the OG image shows the <b>blurred board</b>, the most recognizable izzardry picture. Zhess draws both images with a script from its own glyphs, so they never drift from the game.</p>
 </section>
 
 <!-- RESPECT -->
@@ -934,7 +1019,7 @@ font-variant-numeric: tabular-nums;</code></pre>
     <div><b>Never again</b><span>only a quiet button at the bottom of history</span></div>
   </div>
   <div class="dd">
-    <div class="do"><span class="eyebrow">✓ Do</span><ul><li>"maybe another time" as a lowercase whisper link</li><li>Keep a support button at the end of the scroll area</li><li>Hide one small easter egg (Zudoku: hold help for 3 s)</li></ul></div>
+    <div class="do"><span class="eyebrow">✓ Do</span><ul><li>"maybe another time" as a lowercase whisper link</li><li>Keep a support button at the end of the scroll area</li><li>Hide one small easter egg (Zudoku and Zhess: hold help for 3 s)</li><li>Draw the coffee button yourself; no CDN image</li></ul></div>
     <div class="dont"><span class="eyebrow">× Don't</span><ul><li>Ads, paywalls, "remove ads" upsells, tracking</li><li>Ask on launch, ask repeatedly, guilt-trip</li><li>Show it during a game</li></ul></div>
   </div>
 
@@ -956,8 +1041,10 @@ font-variant-numeric: tabular-nums;</code></pre>
     <li>Every icon button has a translated <code>aria-label</code>, including hidden gestures.</li>
     <li>Brand focus ring (<code>2px solid ring</code>), never the blue default.</li>
     <li>State is never color-only: conflict = red <i>and</i> ring <i>and</i> pulse; solved = green <i>and</i> ✓.</li>
-    <li><code>prefers-reduced-motion</code> drops slides, blurs and loops.</li>
+    <li><code>prefers-reduced-motion</code> drops slides, blurs and loops, but a one-shot mark (the hint) stays visible, still.</li>
     <li>Touch targets are at least 44 px on coarse pointers.</li>
+    <li>Every long press has a keyboard twin (hold <code>Space</code>, or <code>Shift+Enter</code>).</li>
+    <li>A board is a <code>grid</code> of labelled cells; turn-based games announce each move in words.</li>
   </ul>
 </section>
 
@@ -965,7 +1052,7 @@ font-variant-numeric: tabular-nums;</code></pre>
 <div class="part-head" id="part-5" data-part="Part V · Use it">
   <span class="eyebrow">Part V</span>
   <h2>Use it</h2>
-  <p class="lede">Drop the tokens into a new game, check it against the list, and see what's left to fix in Zudoku.</p>
+  <p class="lede">Drop the tokens into a new game, check it against the list, and see how the two reference apps measure up.</p>
 </div>
 
 <section id="start" data-toc="Get started" data-n="13">
@@ -988,7 +1075,8 @@ export default { presets: [ztyle], content: ["./index.html", "./src/**/*.{ts,tsx
 
 &lt;!-- index.html --&gt;
 &lt;body class="halftone-bg"&gt;</code></pre>
-  <p>Reference stack: React 18 + TypeScript, Vite (SWC), Tailwind 3 + tailwindcss-animate, shadcn/Radix (only what you use), lucide, sonner, vite-plugin-pwa, Vitest, GitHub Pages. Keep the engine pure (<code>lib/&lt;game&gt;.ts</code>), heavy work in workers, and the component names shared across games.</p>
+  <p>Reference stack: React 18 + TypeScript (strict), Vite (SWC), Tailwind 3 + tailwindcss-animate, shadcn/Radix (only what you use), lucide, sonner, vite-plugin-pwa, Vitest, Playwright against the production build, GitHub Pages. Zhess was built on it unchanged. Keep the engine pure (<code>lib/&lt;game&gt;.ts</code>), heavy work in workers, and the component names shared across games.</p>
+  <p>Zhess copies <code>ztyle.css</code> and <code>tailwind.preset.ts</code> into <code>src/ztyle/</code> verbatim, with a header naming the Ztyle revision, and keeps its own tokens in <code>src/index.css</code> under a <code>--zhess-</code> prefix. Never edit the copy: change Ztyle, then copy again.</p>
 </section>
 
 <section id="checklist" data-toc="Launch checklist" data-n="14">
@@ -1022,15 +1110,38 @@ export default { presets: [ztyle], content: ["./index.html", "./src/**/*.{ts,tsx
   </table></div>
 </section>
 
-<section id="decisions" data-toc="Open decisions" data-n="16">
+<section id="zhess-audit" data-toc="Zhess audit" data-n="16">
   <span class="eyebrow">Use it</span>
-  <h2 class="sec"><span class="n">16</span>Open decisions</h2>
-  <p class="lede">Calls the owner still needs to make. Until then, the guide uses the default marked ★.</p>
+  <h2 class="sec"><span class="n">16</span>Zhess audit</h2>
+  <p class="lede">Zhess (<code>a6458ff</code>) was built on Ztyle <code>d29758b</code> from its first commit and applies the guide as written, including every Zudoku fix above. These are the contradictions it exposed and how the guide resolved them. Full record: <a href="docs/91-zhess-audit.md">docs/91</a>.</p>
+  <div class="tbl-wrap"><table class="tbl">
+    <tr><th>#</th><th>Found in Zhess</th><th>Now in the guide</th></tr>
+    <tr><td>1</td><td>Mirror tokens turned white pieces black in dark mode</td><td>Theme-stable inks <code>--ink-light</code> / <code>--ink-dark</code></td></tr>
+    <tr><td>2</td><td>Dark theme made a1 a light square</td><td><code>--checker-light</code> / <code>--checker-dark</code></td></tr>
+    <tr><td>3</td><td>A <code>/10</code> highlight matched the other square tone</td><td>Gray state fills at half the step, <code>/5</code></td></tr>
+    <tr><td>4</td><td>The hint glow was cut off by neighbours and <code>overflow-hidden</code></td><td>Glow above neighbours; corner cells carry the rounding</td></tr>
+    <tr><td>5</td><td>Reduced motion made the hint pulse invisible</td><td>Still mark for 2× the pulse</td></tr>
+    <tr><td>6</td><td>A guessed chrome reserve shrank the desktop board</td><td>One clamped <code>--cell-size</code>, measured reserve</td></tr>
+    <tr><td>7</td><td>Toasts covered the toolbar</td><td>In game, toasts sit above the toolbar</td></tr>
+    <tr><td>8</td><td>The workbox snippet served HTML cache-first</td><td><code>directoryIndex: null</code> + <code>precacheFallback</code></td></tr>
+    <tr><td>9</td><td>Root-relative manifest icons and a relative <code>og:image</code> broke on Pages</td><td>Relative icons, absolute social image</td></tr>
+    <tr><td>10</td><td>Long presses had no keyboard path</td><td>Hold <code>Space</code>; <code>Shift+Enter</code></td></tr>
+    <tr><td>11</td><td>A pass-and-play toolbar needs 7 buttons</td><td>Aim for 6, hard limit 7 at 44 px; slots per mode</td></tr>
+    <tr><td>12</td><td>Chess generates no content, yet needs a code</td><td>The code names the game and the room</td></tr>
+  </table></div>
+  <p>Zhess also contributed patterns with no Zudoku counterpart: the opponent stepper and option pills, the status line for a background download, board-edge strips, face-to-face seating, guard-don't-ask, request and presence toasts, and <a href="docs/18-rooms.md">rooms for two devices without a server</a>.</p>
+</section>
+
+<section id="decisions" data-toc="Open decisions" data-n="17">
+  <span class="eyebrow">Use it</span>
+  <h2 class="sec"><span class="n">17</span>Open decisions</h2>
+  <p class="lede">Calls the owner still needs to make. Until then, the guide uses the default marked ★. Zhess shipped every ★ default, so each is proven in a live game.</p>
   <div class="grid-2">
-    <div class="dd" style="margin:0;grid-template-columns:1fr"><div><span class="eyebrow" style="display:block;margin-bottom:6px">Typeface</span><p>★ Self-host Fira Code (what Zudoku looks like on the creator's machine), or pick JetBrains Mono.</p></div></div>
-    <div class="dd" style="margin:0;grid-template-columns:1fr"><div><span class="eyebrow" style="display:block;margin-bottom:6px">Icon language</span><p>★ Grayscale family. Is the sprout glyph an izzardry mark to keep in every icon?</p></div></div>
-    <div class="dd" style="margin:0;grid-template-columns:1fr"><div><span class="eyebrow" style="display:block;margin-bottom:6px">Dark mode</span><p>★ Follow the system. Optionally add a manual toggle on the start screen only.</p></div></div>
-    <div class="dd" style="margin:0;grid-template-columns:1fr"><div><span class="eyebrow" style="display:block;margin-bottom:6px">Z-naming</span><p>★ Swap the first letter for Z (Zudoku, Ztyle…) as the default naming pattern.</p></div></div>
+    <div class="dd" style="margin:0;grid-template-columns:1fr"><div><span class="eyebrow" style="display:block;margin-bottom:6px">Typeface</span><p>★ Self-host Fira Code (what Zudoku looks like on the creator's machine), or pick JetBrains Mono. Zhess bundles Fira Code.</p></div></div>
+    <div class="dd" style="margin:0;grid-template-columns:1fr"><div><span class="eyebrow" style="display:block;margin-bottom:6px">Icon language</span><p>★ Grayscale family, as Zhess's icon shows. Is the sprout glyph an izzardry mark to keep in every icon?</p></div></div>
+    <div class="dd" style="margin:0;grid-template-columns:1fr"><div><span class="eyebrow" style="display:block;margin-bottom:6px">Dark mode</span><p>★ Follow the system, as Zhess does. Optionally add a manual toggle on the start screen only.</p></div></div>
+    <div class="dd" style="margin:0;grid-template-columns:1fr"><div><span class="eyebrow" style="display:block;margin-bottom:6px">Z-naming</span><p>★ Swap the first letter for Z (Zudoku, Zhess, Ztyle…) as the default naming pattern.</p></div></div>
+    <div class="dd" style="margin:0;grid-template-columns:1fr"><div><span class="eyebrow" style="display:block;margin-bottom:6px">Times in history</span><p>★ Time of day or <code>MMM d</code> (Zudoku), until the catalogue picks one. Zhess shows relative times.</p></div></div>
   </div>
 </section>
 
@@ -1040,7 +1151,7 @@ export default { presets: [ztyle], content: ["./index.html", "./src/**/*.{ts,tsx
 <footer>
   <div class="wordmark">ZTYLE</div>
   <p class="tagline" style="margin:6px 0 0">Zero Distractions. Just Games.</p>
-  <p class="micro" style="margin-top:20px;font-size:10px;color:hsl(var(--muted-foreground)/.5)">an izzardry style guide · extracted from Zudoku 717c4d3</p>
+  <p class="micro" style="margin-top:20px;font-size:10px;color:hsl(var(--muted-foreground)/.5)">an izzardry style guide · extracted from Zudoku 717c4d3 · proven by Zhess a6458ff</p>
 </footer>
 
 <script>
@@ -1074,7 +1185,14 @@ export default { presets: [ztyle], content: ["./index.html", "./src/**/*.{ts,tsx
     'moon': '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
     'monitor': '<rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/>',
     'menu': '<line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/>',
-    'play': '<polygon points="6 3 20 12 6 21 6 3"/>'
+    'play': '<polygon points="6 3 20 12 6 21 6 3"/>',
+    'flag': '<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/>',
+    'users': '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+    'arrow-up-down': '<path d="m21 16-4 4-4-4"/><path d="M17 20V4"/><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/>',
+    'git-branch': '<line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/>',
+    'repeat': '<path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/>',
+    'timer': '<line x1="10" x2="14" y1="2" y2="2"/><line x1="12" x2="15" y1="14" y2="11"/><circle cx="12" cy="14" r="8"/>',
+    'user-plus': '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/>'
   };
   function svg(name, size) {
     size = size || 20;
@@ -1188,7 +1306,7 @@ export default { presets: [ztyle], content: ["./index.html", "./src/**/*.{ts,tsx
   }
   swatches($('swLight'), 2); swatches($('swDark'), 3);
 
-  var LAD = [[3, 'halftone'], [5, 'related cells'], [6, 'dense dots'], [10, 'selected, frame'], [20, 'ghost border'], [30, 'dividers'], [50, 'notes, ring'], [70, 'icons at rest']];
+  var LAD = [[3, 'halftone'], [5, 'related cells'], [6, 'dense dots'], [10, 'selected, frame'], [20, 'ghost border'], [25, 'move targets'], [30, 'dividers'], [50, 'notes, ring'], [70, 'icons at rest']];
   $('ladder').innerHTML = LAD.map(function (l) {
     var dots = l[0] <= 6 ? 'background-image:radial-gradient(circle, hsl(var(--foreground) / ' + (l[0] / 100) + ') 1px, transparent 1px);background-size:' + (l[0] === 6 ? 4 : 8) + 'px ' + (l[0] === 6 ? 4 : 8) + 'px' : 'background:hsl(var(--foreground) / ' + (l[0] / 100) + ')';
     return '<div><i style="' + dots + '"></i><b>/' + l[0] + '</b><span>' + l[1] + '</span></div>';
@@ -1215,6 +1333,19 @@ export default { presets: [ztyle], content: ["./index.html", "./src/**/*.{ts,tsx
     cellFig('cell--group-done cell--player', '2', 'Group done') +
     cellFig('cell--hint', '8', 'Hinted · once', 'animation-iteration-count:infinite;animation-duration:1.6s');
 
+  /* two-tone boards: the same markup in a light and a dark scheme */
+  var TT = { 0: 'w', 2: 'b', 5: 'hl', 9: 'w', 10: 'b', 15: 'b' };
+  document.querySelectorAll('[data-two-tone]').forEach(function (el) {
+    var h = '';
+    for (var i = 0; i < 16; i++) {
+      var r = Math.floor(i / 4), c = i % 4, light = (r + c) % 2 === 0;
+      var cls = (light ? 'l' : 'd') + (TT[i] === 'hl' ? ' hl' : '');
+      var stone = TT[i] === 'w' || TT[i] === 'b' ? '<span class="stone ' + TT[i] + '"></span>' : '';
+      h += '<i class="' + cls + '">' + stone + '</i>';
+    }
+    el.innerHTML = h;
+  });
+
   /* ------------------------------------------------------------ type specs */
   var SPECS = [
     ['Wordmark', '300 · 0.3em · 30→36 px', '<span class="wordmark" style="padding-left:.3em">ZUDOKU</span>'],
@@ -1237,7 +1368,9 @@ export default { presets: [ztyle], content: ["./index.html", "./src/**/*.{ts,tsx
     ['shield-check', 'Helpers on', 'ShieldCheck'], ['shield-off', 'Helpers off', 'ShieldOff'], ['share', 'Share', 'Share2'], ['help', 'Help', 'HelpCircle'],
     ['refresh', 'New code', 'RefreshCw'], ['loader', 'Working', 'Loader2'], ['pencil', 'Edit', 'Pencil'], ['check', 'Confirm', 'Check'],
     ['chevron-left', 'Previous', 'ChevronLeft'], ['chevron-down', 'More below', 'ChevronDown'], ['x', 'Close / delete', 'X'], ['download', 'Install', 'Download'],
-    ['sticky-note', 'Notes', 'StickyNote'], ['eye-off', 'Hide UI', 'EyeOff'], ['coffee', 'Support', 'Coffee']];
+    ['sticky-note', 'Notes', 'StickyNote'], ['eye-off', 'Hide UI', 'EyeOff'], ['coffee', 'Support', 'Coffee'],
+    ['flag', 'Draw / resign', 'Flag'], ['arrow-up-down', 'Face to face', 'ArrowUpDown'], ['users', 'Side by side', 'Users'], ['git-branch', 'Continue from here', 'GitBranch'],
+    ['repeat', 'Rematch', 'Repeat'], ['timer', 'Clock', 'Timer'], ['user-plus', 'Invite', 'UserPlus']];
   $('iconGrid').innerHTML = ICN.map(function (i) { return '<div>' + svg(i[0]) + '<span>' + i[1] + '<small>' + i[2] + '</small></span></div>'; }).join('');
 
   /* ------------------------------------------------------------ stage demo */
@@ -1553,14 +1686,15 @@ export default { presets: [ztyle], content: ["./index.html", "./src/**/*.{ts,tsx
 
   /* ------------------------------------------------------------ checklist */
   var CL = [
-    ['Brand', ['Name follows the Z-pattern (or the exception is noted)', 'Wordmark: UPPERCASE, light, 0.3em tracking', 'Tagline "Zero Distractions. Just <Game>." everywhere', 'author meta = izzardry', 'Grayscale icon set: 192, 512, 512 maskable, favicon (real PNGs)', 'OG image 1200 × 630 in the izzardry style']],
-    ['Look', ['Ztyle tokens imported; no ad-hoc colors', 'Brand mono font bundled', 'halftone-bg on the page root', 'Only red/green, only semantically', 'Light and dark checked; follows system', 'One primary per screen; pills; labelled icon buttons']],
-    ['Layout', ['Board centered and stationary across start ⇄ game', 'Start = blurred preview + Start pill', 'Floating, safe-area-aware chrome; tap background hides it', 'Portrait and mobile landscape (rails)', 'Board fits without scrolling, 320 × 568 → 4K']],
-    ['Interaction', ['Touch, mouse and keyboard can each finish a game', 'Long-press ladder 300/500/1000/3000; trailing click swallowed', 'Undo/redo for every move', 'Destructive = immediate + undo toast', 'active:scale-95; select-none on game surfaces']],
-    ['Feedback', ['One helpers toggle, on by default', 'Hint: tap = one step, hold = peek', 'End state: page tint + celebration overlay', 'Long work in workers; spinner in place; cancel restores']],
-    ['Data & platform', ['Deterministic content from an uppercase code', 'Full state in the URL; share = URL', 'Autosave every move; last 100; history with thumbnails', 'Storage keys <game>:<key>, reads in try/catch', 'PWA: offline, network-first HTML, update toast, version stamp', 'GitHub Pages deploy; base "./"; HashRouter']],
+    ['Brand', ['Name follows the Z-pattern (or the exception is noted)', 'Wordmark: UPPERCASE, light, 0.3em tracking', 'Tagline "Zero Distractions. Just <Game>." everywhere', 'author meta = izzardry', 'Grayscale icon set: 192, 512, 512 maskable, favicon (real PNGs)', 'OG image 1200 × 630 in the izzardry style', 'og:image absolute; icon and OG drawn by a script from the game\'s glyphs']],
+    ['Look', ['Ztyle tokens imported; no ad-hoc colors', 'Brand mono font bundled', 'halftone-bg on the page root', 'Only red/green, only semantically', 'Light and dark checked; follows system', 'One primary per screen; pills; labelled icon buttons', 'Identity shades (pieces, QR) the same in both themes', 'Two-tone boards: light cells lighter, highlights at half the step', 'No glow clipped by neighbours or overflow']],
+    ['Layout', ['Board centered and stationary across start ⇄ game', 'Start = blurred preview + Start pill', 'Floating, safe-area-aware chrome; tap background hides it', 'Portrait and mobile landscape (rails)', 'Board fits without scrolling, 320 × 568 → 4K', 'Chrome reserve for the board measured, not guessed', 'Screens checked at 5 sizes × light/dark', 'Toasts never cover the toolbar or the board']],
+    ['Interaction', ['Touch, mouse and keyboard can each finish a game', 'Long-press ladder 300/500/1000/3000; trailing click swallowed', 'Undo/redo for every move', 'Destructive = immediate + undo toast', 'active:scale-95; select-none on game surfaces', 'Every long press has a keyboard twin']],
+    ['Feedback', ['One helpers toggle, on by default', 'Hint: tap = one step, hold = peek', 'End state: page tint + celebration overlay', 'Long work in workers; spinner in place; cancel restores', 'Against an opponent: tint from the player\'s view, none for a draw']],
+    ['Data & platform', ['Deterministic content from an uppercase code', 'Full state in the URL; share = URL', 'Autosave every move; last 100; history with thumbnails', 'Storage keys <game>:<key>, reads in try/catch', 'PWA: offline, network-first HTML, update toast, version stamp', 'GitHub Pages deploy; base "./"; HashRouter', 'Relative manifest icons; precache directoryIndex off', 'Large assets: status line, runtime cache, re-checked each launch', 'No automatic reload mid-game', 'lint, typecheck, tests, build, e2e on the production build']],
     ['Words & respect', ['EN, DE, FR, ES incl. aria-labels; <html lang> follows', 'Copy checked against the voice table', 'No ads, tracking or accounts', 'Donation once, after first win, +1.5 s, "maybe another time"', 'Tutorial overlay on first game; reachable via ?', 'One small easter egg']],
-    ['Accessibility', ['Brand focus ring', 'prefers-reduced-motion honored', 'Never color-only state', 'Touch targets ≥ 44 px on coarse pointers']]
+    ['Accessibility', ['Brand focus ring', 'prefers-reduced-motion honored', 'Never color-only state', 'Touch targets ≥ 44 px on coarse pointers', 'One-shot marks keep a still fallback', 'Board is a labelled grid; moves announced in words']],
+    ['Rooms (two devices only)', ['Code = room; invite link carries only the code', 'Seat key; Allow toast for a lost device', 'Presence dot; one toast slot; calm failure + Connect manually', 'Played on two real phones on different networks']]
   ];
   var saved = {}; try { saved = JSON.parse(store('ztyle:checklist') || '{}') || {}; } catch (e) { saved = {}; }
   var total = 0;
