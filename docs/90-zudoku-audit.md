@@ -2,6 +2,8 @@
 
 Where Zudoku (as of `717c4d3`, 2026-02-15) departs from Ztyle. These are the fixes to bring the reference game in line, ordered by impact.
 
+Zhess, the second reference app, was built with every one of these fixes from its first commit, so its code is a working example of each. See the [Zhess audit](91-zhess-audit.md).
+
 ## Brand & visual
 
 | # | Issue | Where | Fix |
