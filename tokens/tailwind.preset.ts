@@ -39,6 +39,8 @@ const preset = {
         accent: { DEFAULT: c("accent"), foreground: c("accent-foreground") },
         popover: { DEFAULT: c("popover"), foreground: c("popover-foreground") },
         card: { DEFAULT: c("card"), foreground: c("card-foreground") },
+        // Theme-stable inks: `fill-ink-light` stays the lighter neutral in both themes (white pieces).
+        ink: { light: c("ink-light"), dark: c("ink-dark") },
       },
       borderRadius: {
         lg: "var(--radius)",

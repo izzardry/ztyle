@@ -85,6 +85,16 @@
       "ring": {
         "hsl": "0 0% 5%",
         "hex": "#0d0d0d"
+      },
+      "ink-light": {
+        "hsl": "0 0% 98%",
+        "hex": "#fafafa",
+        "note": "= background in light, foreground in dark: the lighter neutral in both themes"
+      },
+      "ink-dark": {
+        "hsl": "0 0% 5%",
+        "hex": "#0d0d0d",
+        "note": "= foreground in light, background in dark: the darker neutral in both themes"
       }
     },
     "dark": {
@@ -171,6 +181,16 @@
       "ring": {
         "hsl": "0 0% 80%",
         "hex": "#cccccc"
+      },
+      "ink-light": {
+        "hsl": "0 0% 95%",
+        "hex": "#f2f2f2",
+        "note": "= foreground"
+      },
+      "ink-dark": {
+        "hsl": "0 0% 5%",
+        "hex": "#0d0d0d",
+        "note": "= background"
       }
     }
   },
@@ -178,10 +198,13 @@
     "foreground": {
       "halftone": 0.03,
       "related": 0.05,
+      "checkerHighlight": 0.05,
       "halftoneDense": 0.06,
       "selectedFill": 0.1,
       "boardFrame": 0.1,
+      "checkerStep": 0.1,
       "ghostBorder": 0.2,
+      "moveTarget": 0.25,
       "groupDivider": 0.3,
       "hoverBorder": 0.3,
       "note": 0.5,
@@ -397,5 +420,16 @@
   "difficulty": {
     "levels": 12,
     "default": 5
+  },
+  "checker": {
+    "note": "Two-tone boards: overlay foreground at checkerStep on the dark cells in light mode and on the light cells in dark mode, so light cells stay lighter in both themes. Grey state fills use checkerHighlight (half the step).",
+    "light": {
+      "lightCells": "transparent",
+      "darkCells": "foreground / 0.1"
+    },
+    "dark": {
+      "lightCells": "foreground / 0.1",
+      "darkCells": "transparent"
+    }
   }
 }

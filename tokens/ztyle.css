@@ -2,7 +2,7 @@
    Ztyle — izzardry design tokens & component recipes
    Plain CSS, no build step. Works standalone or next to Tailwind
    (pair with tokens/tailwind.preset.ts so utilities like bg-foreground/10 work).
-   Extracted from Zudoku. Docs: ../docs/
+   Extracted from Zudoku, proven by Zhess. Docs: ../docs/
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
@@ -66,6 +66,18 @@
   --inset-right: max(1rem, env(safe-area-inset-right));
   --inset-bottom: max(1rem, env(safe-area-inset-bottom));
 
+  /* Theme-stable inks (docs/03): the lighter and the darker neutral, in either theme. For things
+     whose shade is their identity: white and black pieces, stones, a QR plate. HSL triplets. */
+  --ink-light: var(--background);
+  --ink-dark: var(--foreground);
+
+  /* Two-tone patterns (docs/03): the overlay on the light and on the dark cells of a checkerboard,
+     so the light cells stay the lighter ones in both themes. Complete colours, not triplets:
+     background-image: linear-gradient(var(--checker-dark), var(--checker-dark)).
+     Grey state fills on such a board use half the step: foreground/5. */
+  --checker-light: transparent;
+  --checker-dark: hsl(var(--foreground) / .1);
+
   color-scheme: light;
 }
 
@@ -91,6 +103,10 @@
   --border: 0 0% 20%;
   --input: 0 0% 20%;
   --ring: 0 0% 80%;
+  --ink-light: var(--foreground);
+  --ink-dark: var(--background);
+  --checker-light: hsl(var(--foreground) / .1);
+  --checker-dark: transparent;
   color-scheme: dark;
 }
 
@@ -288,7 +304,9 @@ html, body {
   animation: z-error-pulse 2s ease-in-out infinite; animation-delay: -10000s; /* keep all pulses in phase */
   z-index: 20;
 }
-.cell--hint                { animation: z-hint-pulse var(--dur-pulse) ease-out forwards; }
+/* The hint glow reaches 8 px past the cell: lift it above the selected cell (40) so neighbours
+   painted later never cut it off. Don't round a grid with overflow: hidden either (docs/06). */
+.cell--hint                { animation: z-hint-pulse var(--dur-pulse) ease-out forwards; z-index: 41; }
 .cell-note { position: absolute; font-size: .5rem; line-height: 1; color: hsl(var(--foreground) / .5); }
 
 /* Page-wide end-state tint */
@@ -328,6 +346,9 @@ html, body {
 .anim-scale-in { animation: z-scale-in var(--dur-base)   var(--ease) both; }
 .anim-slide-up { animation: z-slide-up var(--dur-chrome) var(--ease) both; }
 
+/* Reduced motion keeps a one-shot mark: shown still for twice the pulse, then cleared. */
+@keyframes z-hint-hold { to { box-shadow: inset 0 0 0 999px hsl(var(--success) / 0); } }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 1ms !important;
@@ -335,4 +356,10 @@ html, body {
     transition-duration: 150ms !important;
   }
   .board--preview { filter: none; }
+  /* A 1 ms pulse would never be seen. The global rule shortens durations, not delays, so the
+     static mark holds for the delay and the 1 ms animation clears it (docs/07). */
+  .cell--hint, .animate-hint-pulse {
+    box-shadow: inset 0 0 0 999px hsl(var(--success) / .3);
+    animation: z-hint-hold 1ms linear calc(var(--dur-pulse) * 2) 1 forwards !important;
+  }
 }
