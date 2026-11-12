@@ -39,6 +39,10 @@ The board itself sits on `shadow-lg`. On the start screen it is additionally blu
 
 The rule is: **actions are round, containers are rounded rectangles, and the bigger the container, the bigger the radius.**
 
+### Corners and clipping
+
+Never round a grid by clipping it (`overflow: hidden` on the grid). Glows, pulses and rings that reach past a cell's edge get cut off at the board edge. **Let the corner cells carry the rounding instead** (`calc(var(--radius) - 2px)` inside a `rounded-lg p-1` frame), and give their overlays `border-radius: inherit`. Zhess's hint pulse was clipped twice: by the neighbouring squares painted after it, and by the grid's `overflow-hidden`. The fix was a `z-[1]` hint layer, no clipping, and rounded corner squares.
+
 ## Borders and lines
 
 - Default hairline: `border border-border` (1 px, `#d9d9d9` / `#333`).
@@ -49,6 +53,7 @@ The rule is: **actions are round, containers are rounded rectangles, and the big
 ## Iconography
 
 - **Library:** [lucide](https://lucide.dev) (`lucide-react`), default 2 px stroke, never filled.
+- **Game glyphs** (pieces, tiles, cards) are the game's own SVG set: thin, even strokes on a 100-unit box, filled with the [theme-stable inks](03-color.md#theme-stable-colours), stroke thickened at small sizes so it stays about 1 px on screen. Draw one set and reuse it everywhere: the board, captured pieces, history thumbnails, the radial dial, text ([figurines](04-typography.md#glyphs-in-text)), the app icon and the OG image. Zhess has six piece shapes and no other piece art.
 - **Sizes:** `w-5 h-5` (20 px) in chrome and toolbars; `w-6 h-6` in the large chevrons of selectors and the dismiss chevron; `w-4 h-4` inline with button text; `w-3 h-3`/`w-3.5` in toasts, tutorial and small pills.
 - **Color:** inherits text color. Resting icon buttons are `text-foreground/70`, hover → `text-foreground`. Tutorial icons use `text-primary`.
 - **Vocabulary** (use the same icon for the same concept in every game):
@@ -70,5 +75,15 @@ The rule is: **actions are round, containers are rounded rectangles, and the big
 | Notes | `StickyNote` |
 | Hide UI | `EyeOff` |
 | Donate | `Coffee` |
+| Flag: offer a draw / resign (Zhess) | `Flag` |
+| Seating face to face / side by side (Zhess) | `ArrowUpDown` / `Users` |
+| Flip the board (Zhess, review) | `RefreshCcw` |
+| Continue from here (Zhess, review) | `GitBranch` |
+| Rematch (Zhess) | `Repeat` |
+| Clock / time control (Zhess) | `Timer` |
+| Invite a second device (Zhess) | `UserPlus` |
+| Copy link (Zhess) | `Copy` |
+| Ready / offline / retry (Zhess status line) | `Check` / `WifiOff` / `RotateCw` |
 
 - Clear-cell in the dial uses the typographic `×`, not an icon. The solved mark uses `✓`. The celebration uses the emoji 🎉. Language uses flag emoji. Text glyphs are fine where an icon would be heavy.
+- Small state glyphs are drawn, not borrowed: Zhess's color pill shows a 12 px disc, half filled for random, outlined for white, solid for black.

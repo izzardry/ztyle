@@ -26,11 +26,14 @@ Every izzardry game is a static web app, installable as a PWA, hosted on GitHub 
   <meta property="og:title" content="Zudoku - Zero Distractions. Just Sudoku." />
   <meta property="og:description" content="A minimalist seed-based Sudoku puzzle game. 12 difficulty levels, notes, hints, and zero ads." />
   <meta property="og:type" content="website" />
-  <meta property="og:image" content="/og-image.png" />
+  <meta property="og:url" content="https://izzardry.github.io/zudoku/" />
+  <meta property="og:image" content="https://izzardry.github.io/zudoku/og-image.png" />  <!-- absolute -->
   <meta name="twitter:card" content="summary_large_image" />
   <!-- twitter:title / description / image mirror og:* -->
 </head>
 ```
+
+Vite rewrites root paths in `index.html` (`/favicon.ico`, `/pwa-192x192.png`) to the `base`, so they work under `base: "./"`. It does **not** touch `og:image`, and crawlers don't resolve relative URLs, so social images take the absolute address of the deployed file. Zhess learned this after its first deploy.
 
 ## Manifest (vite-plugin-pwa)
 
@@ -47,22 +50,43 @@ VitePWA({
     display: "standalone",
     orientation: "any",              // portrait AND landscape are designed for
     start_url: "./",
-    icons: [
-      { src: "/pwa-192x192.png", sizes: "192x192", type: "image/png" },
-      { src: "/pwa-512x512.png", sizes: "512x512", type: "image/png" },
-      { src: "/pwa-512x512-maskable.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
+    icons: [                        // relative: no leading slash (see below)
+      { src: "pwa-192x192.png", sizes: "192x192", type: "image/png" },
+      { src: "pwa-512x512.png", sizes: "512x512", type: "image/png" },
+      { src: "pwa-512x512-maskable.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
     ],
   },
   workbox: {
     globPatterns: ["**/*.{js,css,html,ico,png,svg,woff,woff2}"],
+    // Let navigations reach the NetworkFirst route below. Otherwise the precache route answers
+    // "./" from its directory index (index.html), cache-first, and the route never runs.
+    directoryIndex: null,
+    navigateFallback: undefined,
     runtimeCaching: [{ urlPattern: ({ request }) => request.mode === "navigate",
-                       handler: "NetworkFirst", options: { cacheName: "html-cache", networkTimeoutSeconds: 3 } }],
+                       handler: "NetworkFirst",
+                       options: { cacheName: "html-cache", networkTimeoutSeconds: 3, expiration: { maxEntries: 10 },
+                                  precacheFallback: { fallbackURL: "index.html" } } }],
   },
 })
 ```
 
-- HTML is **network-first** with a 3 s timeout, so online users always get the newest shell, while offline still works.
+- HTML is **network-first** with a 3 s timeout, so online users always get the newest shell, while offline still works. The precached `index.html` is the last fallback, so the app also starts offline right after the first load.
+- **Turn the precache's directory index off.** `precacheAndRoute` is registered before the runtime routes and, by default, answers `./` from the precached `index.html`. Without the two lines above (which earlier versions of this guide lacked), HTML is effectively cache-first and the NetworkFirst route never runs. Zhess found this and fixed it with `directoryIndex: null` plus `precacheFallback`.
+- **Manifest icon paths are relative.** Vite doesn't rewrite the generated manifest, so `/pwa-192x192.png` points at the domain root and breaks on a GitHub Pages project site (`/zhess/`).
 - Fonts are bundled (`woff2` in the precache), not fetched from Google.
+
+## Large assets
+
+An optional asset that is large compared with the app (Zhess's chess engine: 1.8 MB of WASM against a small shell) stays **out of the precache** and is still available offline:
+
+1. **Exclude it from the precache** (`globIgnores: ["engine/**"]`), so installing or updating the app never waits for it.
+2. **Serve it from a runtime cache, cache-first** (`engine-cache`, `CacheFirst`, statuses `[0, 200]`).
+3. **Download it from the page, not from the service worker**, after the first paint (Zhess waits 1 s). A page can't see the progress of a service-worker install; it can see its own `fetch` stream. Write the files into the same runtime cache with `cache.put`, and nothing partial on failure.
+4. **Show it in a status line on the start screen** ([components](10-components.md#status-line)): `Computer 43%` with a thin bar, then `Computer ready offline`. The start button shows its own spinner only if the player starts before the download is done.
+5. **Check again on every launch** and download again if the copy is gone: iOS evicts caches. Offline, wait for the `online` event. With Save-Data on, wait for a tap. After a failure, offer a retry.
+6. Test it: Zhess's e2e suite starts a computer game offline on a browser that never played one online.
+
+Weigh the cost: every first visit downloads the asset, also for visitors who never use it. Zhess accepted that so its computer works offline from the first launch.
 
 ## Assets checklist
 
@@ -80,7 +104,7 @@ VitePWA({
 - `registerType: "autoUpdate"` plus a `useSWUpdate` hook:
   - checks hourly (`registration.update()`),
   - when a new worker is waiting, shows a toast "A new version is available" with a **Reload** action (15 s),
-  - reloads once on `controllerchange`.
+  - reloads once on `controllerchange`, **but never in the middle of a game**: then it shows the Reload toast instead (Zhess). It also doesn't reload when the very first worker takes control.
 - Tapping the version stamp runs a manual check.
 
 ## Version stamp
@@ -109,3 +133,10 @@ It is displayed as `2026-02-15 16:15:09 (717c4d3)`. See [components](10-componen
 ## Heavy computation
 
 Generation/search runs in **Web Workers** (`src/workers/*.worker.ts`). A pool of workers (`navigator.hardwareConcurrency`) is used for searches. Workers post progress messages that drive the progress tooltip. The main thread never blocks for more than a frame.
+
+- GitHub Pages can't send the COOP/COEP headers that `SharedArrayBuffer` needs, so **WASM runs single-threaded**. Zhess ships Stockfish's `lite-single` build for that reason.
+- A prebuilt worker can be the worker file itself: Zhess loads `engine/stockfish-19-lite-single.js` with `new Worker(new URL(path, document.baseURI))` and talks to it in its own text protocol (UCI). No wrapper worker is needed.
+
+## Third-party assets and licences
+
+Ship a third-party binary **unmodified, as a separate static asset**, with its licence file next to it (`public/engine/Copying.txt`), and credit it in one line at the bottom of the start screen's scroll area ([components](10-components.md#credits-line)). Zhess is MIT; the GPLv3 engine stays a separate program the app talks to, not code linked into the bundle.

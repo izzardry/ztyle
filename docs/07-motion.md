@@ -56,6 +56,8 @@ className={cn(
 
 The board's `transition` is only active *during* the transition (`duration-500`, otherwise `duration-0`), so in-game re-renders never animate the blur.
 
+If the start preview was drawn smaller to clear the start chrome ([layout](05-layout.md#board-sizing)), its `scale` and `translate` ride on the same 500 ms transition, so the board sharpens and grows in one movement.
+
 ## Stagger
 
 Groups that appear together enter with **100 ms stagger** in reading order (tutorial bubbles at 100, 200, 300, 350, 400, 500 ms: `opacity-0 translate-y-2 → visible`, 500 ms each). Exit is all at once (400 ms fade).
@@ -68,12 +70,28 @@ When many elements pulse (all conflict cells), they must pulse **in phase**. Zud
 .sudoku-cell-error { animation: error-pulse 2s ease-in-out infinite; animation-delay: -10000s; }
 ```
 
+The preset's `animate-error-pulse` carries the same delay; Zhess's pulsing king in check uses it unchanged.
+
+Other loops that are allowed, because they mean "waiting for someone": Zhess's presence dot (hollow and pulsing while the opponent is away) and the button of a pending request (`animate-pulse`). Both stop under reduced motion and keep their static state.
+
 ## Direct manipulation
 
 When a finger drives the motion (swipe, dial), the element tracks the finger with **no transition**. On release it animates to its rest state over 200 ms ease-out:
 
 - Swipe-to-delete: `translateX(dx)` and `opacity 1 → .5` while dragging. Past 40 % of the width it slides to `-100%` and fades, *then* the wrapper collapses its height to 0 over 200 ms. Below 40 % it snaps back.
 - Desktop delete runs the same height collapse (200 ms) without the slide.
+
+## Moves on the board
+
+A piece or token that moves by itself slides from its old cell to the new one: 200 ms, ease-out, `transform` only. Skip the slide when the player dragged it there (the finger already did the moving) and under reduced motion.
+
+One-shot marks on a single cell are short and quiet:
+
+| Mark | Recipe |
+|------|--------|
+| Hint | `hint-pulse`, 800 ms, once, drawn **above** the neighbouring cells so the 8 px ring is not cut off ([surfaces](06-surfaces.md#corners-and-clipping)) |
+| Rejected move (Zhess blunder guard) | The piece itself pulses: `scale(1.08)` plus a `destructive` drop-shadow glow, 800 ms, once |
+| Typed input that didn't parse (Zhess) | The input chip shakes ±4 px, 200 ms, twice, struck through in `destructive` |
 
 ## Toasts
 
@@ -82,3 +100,16 @@ When a finger drives the motion (swipe, dial), the element tracks the finger wit
 ## Reduced motion
 
 Respect `prefers-reduced-motion: reduce`: drop translate/scale/blur transitions to opacity-only at 150 ms, and stop infinite pulses (keep the static red fill). The Ztyle CSS includes this rule. See [accessibility](16-accessibility.md).
+
+**A one-shot pulse needs a still fallback.** The global rule shortens every animation to 1 ms, so a hint pulse would be over before it is seen, and the player loses the information. Show the mark statically for twice the pulse's duration, then clear it. The global rule shortens durations, not delays, so a 1 ms clearing animation delayed by that time does the job:
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  .cell--hint, .animate-hint-pulse {
+    box-shadow: inset 0 0 0 999px hsl(var(--success) / .3);
+    animation: z-hint-hold 1ms linear calc(var(--dur-pulse) * 2) 1 forwards !important;
+  }
+}
+```
+
+`ztyle.css` ships this for the hint. Do the same for every game-specific one-shot mark: Zhess holds its red blunder glow the same way, and also moves keyboard focus to the hinted square with a visible ring.

@@ -13,7 +13,7 @@ Where izzardry appears:
 | GitHub org / repo | `github.com/izzardry/<GameName>` |
 | Donation link | Personal ("support me as an independent developer"). izzardry is a person, not a corporation. |
 
-> Zudoku currently sets `author` to `holzschneider` and links Buy Me a Coffee to `holzschneider`. That's fine for the person; for the label, prefer `izzardry` in metadata.
+> Zudoku currently sets `author` to `holzschneider` and links Buy Me a Coffee to `holzschneider`. That's fine for the person; for the label, prefer `izzardry` in metadata. Zhess does exactly that: `author` is `izzardry`, the coffee link stays personal, and the scroll area ends with `an izzardry game`.
 
 ## Game naming
 
@@ -22,13 +22,14 @@ Observed pattern: **swap the first letter of a familiar word for a Z.**
 | Familiar word | izzardry name |
 |---------------|---------------|
 | Sudoku | **Zudoku** |
+| Chess | **Zhess** |
 | Style | **Ztyle** |
 
 Rules for new names:
 
 - One word, pronounceable, recognizably the classic it riffs on (Zolitaire, Zinesweeper, Zokoban, Zonogram…).
-- Wordmark is UPPERCASE with very wide tracking: `Z U D O K U`.
-- In running text, use Capitalized form: "Zudoku".
+- Wordmark is UPPERCASE with very wide tracking: `Z U D O K U`, `Z H E S S`.
+- In running text, use Capitalized form: "Zudoku", "Zhess".
 - `short_name` in the PWA manifest = the bare name (≤ 12 chars).
 
 ## Tagline formula
@@ -39,9 +40,9 @@ The tagline is part of the brand. Z is for **Zero**: the Z in the name and the Z
 
 - Two sentences, each ending with a period. Title-ish capitalization: `Zero Distractions. Just Sudoku.`
 - Use it verbatim (not translated) under the wordmark on the start screen, in `<title>`, OG/Twitter titles and the manifest `name`.
-- Page title format: `Zudoku - Zero Distractions. Just Sudoku.`
+- Page title format: `Zudoku - Zero Distractions. Just Sudoku.` · `Zhess - Zero Distractions. Just Chess.`
 - Meta description format: `Zero Distractions. Just Sudoku. A minimalist seed-based Sudoku puzzle game.`
-- OG description format: `A minimalist seed-based Sudoku puzzle game. 12 difficulty levels, notes, hints, and zero ads.` (One sentence on what it is, then a comma list of 3–4 features, ending in **"and zero ads."**)
+- OG description format: `A minimalist seed-based Sudoku puzzle game. 12 difficulty levels, notes, hints, and zero ads.` (One sentence on what it is, then a comma list of 3–4 features, ending in **"and zero ads."**) Zhess: `A minimalist chess game. 12 computer levels, serverless rooms for two, a chess clock, and zero ads.`
 
 ## Wordmark
 
@@ -82,6 +83,12 @@ It works as an icon, but it uses warm cream and slate-blue, which appear nowhere
 
 **Open question:** is the sprout glyph meant as an izzardry mark? If yes, put it in the center cell of every game's icon and keep it the *only* non-gray element.
 
+**Zhess is the first icon made to this standard**: a `#0d0d0d` tile, a faint 8×8 grid in thin strokes, and one knight from the game's own piece set in the center. No sprout, no color.
+
+<img src="../assets/reference/zhess-app-icon.png" width="160" alt="Zhess app icon" />
+
+**Draw the icon and the OG image from code.** Zhess renders both with a script (`scripts/generate-brand-images.mjs`, headless Chromium) from the same SVG pieces the board uses. The brand images then never drift from the game, and a new size is one command.
+
 ## Social / OG image
 
 **Current Zudoku OG image** (`assets/reference/zudoku-og-image.png`): a navy gradient, a Courier-style serif mono font, and a faint 3×3 grid at the right.
@@ -95,3 +102,9 @@ The izzardry standard (1200 × 630):
 - Tagline below in `muted-foreground` (`#8c8c8c`), ~36 px.
 - Feature line: 3 items separated by `  |  `, ~24 px, `muted-foreground` at 70 %.
 - Optional: a real screenshot of the board, blurred 8 px at 60 % opacity, exactly like the start screen. This is the most recognizable izzardry image.
+
+Zhess follows this to the letter: dark tile, halftone dots, a blurred board behind the wordmark, and the feature line `12 computer levels | rooms for two | zero ads`.
+
+<img src="../assets/reference/zhess-og-image.png" width="480" alt="Zhess OG image" />
+
+Point `og:image` and `twitter:image` at the **absolute** URL of the deployed file and add `og:url`. Crawlers do not resolve a relative path against the page (see [platform](12-platform-pwa.md#indexhtml-head-template)).

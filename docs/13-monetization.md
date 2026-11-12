@@ -15,16 +15,18 @@ izzardry games are **free, ad-free, account-free**. Revenue is voluntary support
 
 | Aspect | Rule |
 |--------|------|
-| When | **After the first completed game**, 1.5 s after the celebration overlay appears |
+| When | **After the first completed game**, 1.5 s after the celebration overlay appears. In a game with an opponent: after the **first win** (Zhess), never after a loss. |
 | How often | **Once per device, ever** (`<game>:donation-shown`) |
 | Where | Centered dialog, `sm:max-w-md`, `text-center` |
 | Icon | `Coffee` in a 48 px round amber disc (the only place amber is used) |
 | Title | "Did you enjoy your first round?" |
 | Body | "If you'd like to support me as an independent developer building apps without distractions (or ads), you might want to..." Personal "me", ends trailing off into the button. |
-| Action | The official Buy Me a Coffee button image (yellow, 50 px tall) |
+| Action | The Buy Me a Coffee button (yellow, 50 px tall), **drawn locally**: a `Coffee` icon and the label on the brand yellow, no image from the CDN |
 | Dismiss | Whisper link, lowercase: "maybe another time" |
 
 Use the same copy (translated) in every game, so the voice stays consistent across the catalogue.
+
+Why local: the official badge is an image on `cdn.buymeacoffee.com`, which means a request to a third party on every start screen, and a broken image offline. Zhess draws the same yellow button itself, and the link is only followed on a tap.
 
 ## Persistent support link
 
@@ -32,7 +34,7 @@ At the very bottom of the start screen's scroll area (below history), the Buy Me
 
 ## Easter egg
 
-Long-pressing the in-game **help** button for 3 s opens the donation dialog (if it hasn't been shown yet). Keep one small, discoverable delight like this per game.
+Long-pressing the in-game **help** button for 3 s opens the donation dialog (if it hasn't been shown yet). Keep one small, discoverable delight like this per game. Zhess keeps the same one and announces it: `Show help (hold for a surprise)`. Whether every game needs a second, game-specific egg is still open.
 
 ## Link
 

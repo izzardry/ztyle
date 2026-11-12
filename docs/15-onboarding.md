@@ -8,7 +8,7 @@ There is no multi-step walkthrough. There is a **single overlay of floating bubb
 
 | Aspect | Rule |
 |--------|------|
-| When | Automatically the **first time a game starts** (after the start transition). Again any time via the `?` help button. |
+| When | Automatically the **first time a game starts** (after the start transition). Again any time via the `?` help button. Only for a brand-new game started with the Start pill, never for a resumed one (Zhess). |
 | Dismiss | Tap/click **anywhere**. A pulsing `Tap anywhere to start` (`text-[10px] text-muted-foreground/60 animate-pulse`) sits at bottom-center. |
 | Scrim | `bg-background/60 backdrop-blur-[2px]`, so the game is visible but soft |
 | Layer | Portaled, `z-[100]` |
@@ -27,6 +27,19 @@ There is no multi-step walkthrough. There is a **single overlay of floating bubb
 6. **Hide UI**: "Tap background to hide UI".
 
 Rules: max ~6 bubbles, max ~8 words per line, each with its real lucide icon in `text-primary`.
+
+Zhess fits a game with more controls into the same six bubbles by giving each toolbar button one line that names both its tap and its hold:
+
+| Bubble | Text |
+|--------|------|
+| Back | **Back to start** / Your game is saved |
+| Code | **Game code** / Same code, same game |
+| How to move | Touch: `Tap a piece, then a square. Or drag it.` · Pointer: `Click or drag a piece. Or type a move:` plus a sample |
+| Secondary input | **Promotion** / Hold the last square to pick a piece |
+| Toolbar | `Helpers on or off` · `Tap: hint · Hold: threats` · `Tap: draw · Hold: resign` |
+| Hide UI | `Tap background to hide UI` |
+
+The pattern `Tap: x · Hold: y` is how to teach the [long-press ladder](08-interaction.md#the-long-press-ladder) without a second bubble.
 
 ## Other first-run moments
 

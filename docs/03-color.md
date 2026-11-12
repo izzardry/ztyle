@@ -44,8 +44,9 @@ Most of the visual nuance comes from **foreground at low alpha**, not from extra
 | `foreground/6` | Dense halftone |
 | `foreground/10` | Board frame fill, selected cell fill, icon-button hover |
 | `foreground/20` | Ghost button border, radial item border |
+| `foreground/25` | Move-target markers: legal-move dots, capture rings (Zhess) |
 | `foreground/30` | Block dividers (thick grid lines), card hover border, radial note ring, input underline |
-| `foreground/40–50` | Note digits, selection ring, noted ring in dial |
+| `foreground/40–50` | Note digits, selection ring, noted ring in dial, board coordinates (`/40`) |
 | `foreground/60` | User-entered digits in thumbnails |
 | `foreground/70` | Icon-button resting icon color |
 
@@ -62,22 +63,67 @@ Translucent surfaces: `card/80` (floating chrome), `card/90` (back-to-top), `car
 | Board solved | page background tints to `success/12` over 1000 ms |
 | Board full but wrong | page background tints to `destructive/12` over 1000 ms |
 | Hint placed | `success` pulse: fill `success/30 → 0`, ring `0 → 8px`, 800 ms, once |
+| King in check (Zhess) | The conflict recipe on the king's square: `destructive/15` fill, `ring-1 destructive/40`, synced pulse |
+| Threat peek (Zhess) | `destructive/10` fill on every attacked square, only while the hint is held |
+| Mistake bounced back (Zhess) | The piece pulses `destructive` once (drop-shadow glow, 800 ms) |
 | Solved marker in lists | `✓` in `text-success font-mono text-xs` |
 | Delete affordance hover | `hover:text-destructive hover:border-destructive/50` |
 
 Tinting the **whole page** for the end state is a signature move. Use it for any game's win/lose result instead of a modal color.
 
+In a game against an opponent, tint from the point of view of the player who holds the device: `success/12` for a win, `destructive/12` for a loss, **no tint** for a draw. When one device belongs to both players (pass-and-play), there is no single point of view, so there is no tint either; the overlay names the winner.
+
+## Theme-stable colours
+
+Some shades are not decoration but identity: white and black pieces, stones, the two players' sides, a QR code that must scan. **They keep their shade in both themes.** Only the outline follows the surface.
+
+```css
+:root, .light { --ink-light: var(--background); --ink-dark: var(--foreground); }
+.dark         { --ink-light: var(--foreground); --ink-dark: var(--background); }
+```
+
+`--ink-light` is always the lighter neutral and `--ink-dark` the darker one. Both are in `ztyle.css`; the Tailwind preset exposes them as `ink-light` / `ink-dark` (`fill-ink-light`, `bg-ink-dark/50`). Declare any game-specific variant on the same selectors as the tokens, so a `.light` or `.dark` subtree resolves its own values.
+
+| Piece | Fill | Stroke | Light theme | Dark theme |
+|-------|------|--------|-------------|------------|
+| White | `ink-light` | `foreground` | reads as an outline | reads as a solid shape |
+| Black | `ink-dark` | `foreground` | reads as a solid shape | reads as an outline |
+
+<p>
+<img src="../assets/screenshots/zhess/03-game-desktop.png" width="400" alt="Zhess in the light theme" />
+<img src="../assets/screenshots/zhess/02-game-mobile-dark.png" width="185" alt="Zhess in the dark theme" />
+</p>
+
+Zhess learned this after release: with pieces filled from `background` and `foreground`, the dark theme turned white pieces black. Its QR codes follow the same rule: dark modules on a white plate in both themes.
+
+## Two-tone patterns
+
+A checkerboard is two tones of the cell colour, one step apart: `card`, and `card` plus a `foreground/10` overlay. **Put the overlay where it keeps the light cells lighter in both themes**: on the dark cells in the light theme, on the light cells in the dark theme (`foreground` is light there, so the overlay brightens).
+
+```css
+:root, .light { --checker-light: transparent;                --checker-dark: hsl(var(--foreground) / .1); }
+.dark         { --checker-light: hsl(var(--foreground) / .1); --checker-dark: transparent; }
+```
+
+These two tokens are complete colours. Use them as the lowest overlay: `background-image: linear-gradient(var(--checker-dark), var(--checker-dark))`. Without the swap, a dark theme turns a1 light and the board reads as a mirror image.
+
+### State fills at half the step
+
+Grey state fills on a two-tone board use **half the checker step: `foreground/5`**. A highlighted square then sits between the two tones and never matches the other colour, so the pattern holds. With `foreground/10`, a highlighted light square becomes indistinguishable from a dark one. Rings, dots and red fills are unaffected; they don't compete with the gray steps.
+
+Stack the overlays in one `background-image` list, top first: state fills, then the checker tone, over `bg-card`.
+
 ## Off-system colors
 
 - **Amber** (`amber-100`/`amber-600`, dark `amber-900/30`/`amber-400`) is used only for the coffee icon disc in the donation dialog.
-- The Buy Me a Coffee button image keeps its own yellow. It is a third-party badge, so leave it as is.
+- The Buy Me a Coffee button keeps its own yellow. It is a third-party brand, so leave it as is, also when you draw the button yourself ([monetization](13-monetization.md)).
 - Never use the default browser focus color (blue). See [accessibility](16-accessibility.md).
 
 ## Dark mode
 
 <img src="../assets/screenshots/13-game-desktop-dark-preview.png" width="640" alt="Dark mode preview" />
 
-The dark palette is complete and looks right (above: Zudoku with `.dark` forced on). Ship it by following the OS setting:
+The dark palette is complete and looks right (above: Zudoku with `.dark` forced on). Zhess ships it exactly as below. Ship it by following the OS setting:
 
 ```ts
 // main.tsx, before render
@@ -89,3 +135,5 @@ apply(); mq.addEventListener("change", apply);
 Also update `<meta name="theme-color">` to match: `#fafafa` in light, `#0d0d0d` in dark (use two meta tags with `media="(prefers-color-scheme: …)"`).
 
 A manual toggle is optional. If added, it is an icon-button (`Sun`/`Moon`) on the start screen next to the language switcher, never in game.
+
+**Check every game surface in both themes.** Inverting tokens is right for chrome and wrong for identity: see [theme-stable colours](#theme-stable-colours) and [two-tone patterns](#two-tone-patterns).

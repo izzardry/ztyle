@@ -7,7 +7,7 @@ Minimal UI makes accessibility easy to forget. These are requirements, not nice-
 - Every icon-only button has a translated `aria-label`.
 - The label describes the **current action**, including hidden gestures: `"Get hint (hold for full reveal)"`.
 - Toggles describe what pressing will do: helpers on → `"Disable safety helpers"`. Name i18n keys after the text they hold. Zudoku has `enableSafety: 'Disable safety helpers'`, which is confusing to maintain.
-- Decorative glyphs (🎉, ✓, ×) get `aria-hidden` or a text alternative.
+- Decorative glyphs (🎉, ✓, ×) get `aria-hidden` or a text alternative. Glyphs inside text (figurines) are `aria-hidden` next to a visually hidden plain form (`Nf3`).
 
 ## Focus
 
@@ -20,7 +20,16 @@ Minimal UI makes accessibility easy to forget. These are requirements, not nice-
 ```
 
 - Overlays trap focus while open (Radix dialogs do this) and return focus on close.
-- Add arrow-key navigation between cells in grid games (Zudoku lacks it).
+- Add arrow-key navigation between cells in grid games (Zudoku lacks it). Zhess uses a **roving `tabindex`**: one cell is in the tab order, the arrow keys move it.
+- A pointer press on the board must not move DOM focus (`preventDefault` on `mousedown`), so no stray ring appears after a click. Keyboard users tab in.
+- When the game points at a cell (a hint), move focus there with a visible ring (`focus({ focusVisible: true })`), so the mark survives reduced motion.
+- Take the blurred start preview out of the tab order and the accessibility tree (`inert`). It is decoration until Start.
+
+## Board semantics
+
+A board is a `role="grid"` of `row`s and `gridcell`s. Label each cell with its content and its name: Zhess says `white knight, g1`, and adds the state (`possible move`, `in check`, `last move`). A visually hidden description explains the keys.
+
+In a turn-based game, **announce each move in words** in a polite live region: `Black: knight to f6, check`. Announce only what changed; don't re-announce on unrelated renders. Clocks are `role="timer"`.
 
 ## Contrast
 
@@ -43,12 +52,14 @@ Never convey state by color alone: solved = ✓ **and** green; conflict = red **
 }
 ```
 
-Included in `tokens/ztyle.css`.
+Included in `tokens/ztyle.css`, together with a still fallback for the hint pulse. Every one-shot mark needs one, or reduced motion removes the information along with the motion ([motion](07-motion.md#reduced-motion)). Drop piece slides too; infinite pulses get `motion-reduce:animate-none` and keep their static state.
 
 ## Touch targets
 
-- Toolbar icon buttons are 36 px. Aim for **44 px** on touch (`p-2.5` with a 20 px icon) in new games.
+- Toolbar icon buttons are 36 px. Aim for **44 px** on touch (`p-2.5` with a 20 px icon) in new games. Zhess uses 44 px for every toolbar button on every device and shrinks only the spacing.
 - The radial dial lets small cells (≥ 28 px) still be operated precisely.
+- Board cells below 44 px are accepted when the whole board must fit. Say so in the design doc: Zhess's squares are ≥ 34 px.
+- Every long press has a key ([interaction](08-interaction.md#keyboard-twin-for-a-long-press)).
 
 ## Zoom
 
